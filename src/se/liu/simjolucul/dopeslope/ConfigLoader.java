@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Loads configuration properties from {@code resources/config.properties} and
+ * provides access to them via static methods (only a debug mode for now).
+ */
 public enum ConfigLoader {
     INSTANCE;
 
@@ -21,7 +25,7 @@ public enum ConfigLoader {
         try (FileInputStream input = new FileInputStream("resources/config.properties")) {
             props.load(input);
         } catch (IOException e) {
-            e.printStackTrace(); // Consider using a logger in production
+            e.printStackTrace();
         }
 
         Map<String, String> map = new HashMap<>();

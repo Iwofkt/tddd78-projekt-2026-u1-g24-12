@@ -25,7 +25,6 @@ public class Main {
     private MenuPanel menuPanel = null;
 
     private final Map<GameModeType, HighscoreList> highscoreLists;
-    private AppState currentState = AppState.MENU;
 
     /** The virtual width of the game window in pixels. */
     public static final int VIRTUAL_WIDTH = 800;
@@ -65,21 +64,15 @@ public class Main {
     }
 
     public void showMenu() {
-        currentState = AppState.MENU;
         menuPanel.startMenu();
         cardLayout.show(cardPanel, "menu");
         gamePanel.stopGame();
     }
 
     public void startGame(GameModeType gameModeType) {
-        currentState = AppState.PLAYING;
         menuPanel.stopMenu();
         cardLayout.show(cardPanel, "game");
         gamePanel.startGame(gameModeType);
-    }
-
-    public Map<GameModeType, HighscoreList> getHighscoreLists() {
-        return highscoreLists;
     }
 
     private void loadHighscores() {
