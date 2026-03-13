@@ -26,7 +26,7 @@ public class GameBase {
     private static final int PLAYER_TEXTURE_SCALE = 2;
     private static final double PLAYER_START_ROTATION = 0.5 * Math.PI;
     private static final int MARGIN = 30;
-    private static final int MILLISECONDS_PER_SECOND = 100;
+    private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final double SPRAY_THRESHOLD_SPEED = 8.0;
     private final static String RESOURCE_PACK = "standardPixel";
 
@@ -143,7 +143,7 @@ public class GameBase {
     }
 
     public String getFormattedGameTime() {
-        return gameTimer.getFormattedTime();
+        return GameTimer.formatMillis(gameTimer.getTimeInMillis());
     }
 
     public boolean hasFinishedRace() {
@@ -179,7 +179,7 @@ public class GameBase {
         if (gamePaused) {
             gameTimer.pause();
         } else {
-            gameTimer.resume();
+            gameTimer.start();
         }
 
         notifyObservers();

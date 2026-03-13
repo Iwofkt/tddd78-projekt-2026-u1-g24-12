@@ -4,6 +4,7 @@ import se.liu.simjolucul.dopeslope.Main;
 import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.gameobjects.Obstacle;
 import se.liu.simjolucul.dopeslope.gameobjects.Player;
+import se.liu.simjolucul.dopeslope.handlers.GameTimer;      // <-- added import
 import se.liu.simjolucul.dopeslope.highscore.Highscore;
 import se.liu.simjolucul.dopeslope.highscore.HighscoreList;
 import se.liu.simjolucul.dopeslope.ui.Button;
@@ -16,9 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Main game rendering component. Handles scaling of the game world,
+ * drawing of all game objects, particles, UI overlays, and pause/game‑over screens.
+ */
 public class GameComponent extends JComponent implements GameObserver {
 
-    // --- Layout and UI constants ---
+    // -- Layout and UI constants -- //
     private static final int TEXT_MARGIN = 10;
     private static final int TEXT_SIZE = 20;
     private static final float MENU_TRANSPARENCY = 0.4F;
@@ -27,26 +32,36 @@ public class GameComponent extends JComponent implements GameObserver {
     private static final int BUTTON_WIDTH = 200;
     private static final int BUTTON_HEIGHT = 50;
     private static final int BUTTON_VERTICAL_SPACING = 60;
-    private static final int BUTTON_Y_OFFSET_FRACTION_NUM = 2; // numerator for 2/3
-    private static final int BUTTON_Y_OFFSET_FRACTION_DEN = 3; // denominator for 2/3
+
+    // This constant needs to be a fraction – use a double or two ints.
+    // For simplicity, keep the original two‑int approach.
+    private static final int BUTTON_Y_OFFSET_NUM = 2;
+    private static final int BUTTON_Y_OFFSET_DEN = 3;
 
     // Stat display
-    private static final int STAT_BAR_WIDTH_FACTOR = 7;          // TEXT_SIZE * 7
-    private static final int STAT_BAR_INNER_INSET = 2;           // for the filled portion
-    private static final int STAT_BAR_GREEN_COMPONENT = 100;     // green base when speed low
+    /** Multiplier for TEXT_SIZE to get stat bar width. */
+    private static final int STAT_BAR_WIDTH_FACTOR = 7;
+    /** Inner inset for the filled portion of the stat bar. */
+    private static final int STAT_BAR_INNER_INSET = 2;
+    /** Green component base for low‑speed color. */
+    private static final int STAT_BAR_GREEN_COMPONENT = 100;
 
     // Gradient overlay
+    /** Offset from bottom where the gradient ends. */
     private static final int GRADIENT_BOTTOM_OFFSET = 50;
     private static final Color GRADIENT_TOP_COLOR = new Color(35, 105, 158, 20);
     private static final Color GRADIENT_BOTTOM_COLOR = new Color(0, 0, 0, 50);
 
     // Title
-    private static final int TITLE_FONT_SIZE_MULTIPLIER = 2;     // TEXT_SIZE * 2
-    private static final int TITLE_Y_FRACTION_DEN = 5;           // vh / 5
+    /** Multiplier for TEXT_SIZE to get title font size. */
+    private static final int TITLE_FONT_SIZE_MULTIPLIER = 2;
+    /** Denominator for vertical title position (vh / 5). */
+    private static final int TITLE_Y_FRACTION_DEN = 5;
 
     // Game over / paused stats
     private static final int SCORE_FONT_SIZE = 40;
     private static final int HIGHSCORE_FONT_SIZE = 20;
+    /** Maximum number of highscores to display. */
     private static final int HIGHSCORE_DISPLAY_LIMIT = 10;
 
     // Stat text positions (infoLevel values)
@@ -57,16 +72,25 @@ public class GameComponent extends JComponent implements GameObserver {
     private static final int STAT_TIME_LABEL_LINE = 11;
     private static final int STAT_TIME_VALUE_LINE = 13;
 
-    // Time formatting (centiseconds = 1/100 second)
-    private static final int CENTISECONDS_PER_MINUTE = 6000;   // 60 * 100
-    private static final int CENTISECONDS_PER_SECOND = 100;
-    private static final int SECONDS_PER_MINUTE = 60;
+    // Other numeric constants
+    /** Divisor to convert distance to metres (distance is stored in cm). */
+    private static final int CENTIMETERS_PER_METER = 100;   // fixed spelling
+    /** Factor for spacing after main score. */
+    private static final int SCORE_TO_HIGHSCORE_SPACING = 2;
+    /** Vertical position fraction for main score (1/4 of screen height). */
+    private static final int SCORE_Y_FRACTION_DEN = 4;
 
     private final Map<GameModeType, HighscoreList> highscoreLists;
     private final GameBase gameBase;
-
     private final List<Button> pauseMenuButtons = new ArrayList<>();
 
+    /**
+     * Creates a new GameComponent.
+     *
+     * @param gameBase        the game logic instance
+     * @param main            the main application (for menu navigation)
+     * @param highscoreLists  map of highscore lists per game mode
+     */
     public GameComponent(GameBase gameBase, Main main, Map<GameModeType, HighscoreList> highscoreLists) {
         this.gameBase = gameBase;
         this.highscoreLists = highscoreLists;
@@ -75,7 +99,7 @@ public class GameComponent extends JComponent implements GameObserver {
 
         // Position buttons relative to the game world size
         int centerX = (gameBase.getWidth() - BUTTON_WIDTH) / 2;
-        int baseY = gameBase.getHeight() * BUTTON_Y_OFFSET_FRACTION_NUM / BUTTON_Y_OFFSET_FRACTION_DEN;
+        int baseY = gameBase.getHeight() * BUTTON_Y_OFFSET_NUM / BUTTON_Y_OFFSET_DEN;
 
         pauseMenuButtons.add(new Button(
                 centerX, baseY, BUTTON_WIDTH, BUTTON_HEIGHT,
@@ -131,26 +155,14 @@ public class GameComponent extends JComponent implements GameObserver {
         Graphics2D g2d = (Graphics2D) g.create();
 
         // Calculate scaling to fit the game world into the component
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
-
-        int vw = gameBase.getWidth();
-        int vh = gameBase.getHeight();
-
-        double scaleX = (double) panelWidth / vw;
-        double scaleY = (double) panelHeight / vh;
-        double scale = Math.min(scaleX, scaleY);
-
-        int offsetX = (int) ((panelWidth - vw * scale) / 2);
-        int offsetY = (int) ((panelHeight - vh * scale) / 2);
-
-        g2d.translate(offsetX, offsetY);
-        g2d.scale(scale, scale);
+        ViewTransform transform = computeViewTransform();
+        g2d.translate(transform.offsetX, transform.offsetY);
+        g2d.scale(transform.scale, transform.scale);
 
         Player player = gameBase.getPlayer();
 
         // Background and base layers
-        overlay(g2d, 1, Color.LIGHT_GRAY, vw, vh);
+        overlay(g2d, 1.0f, Color.LIGHT_GRAY, transform.vw, transform.vh);
 
         // Draw all effect layers in correct order
         drawParticles(g2d, gameBase.getTrackParticles());
@@ -161,7 +173,7 @@ public class GameComponent extends JComponent implements GameObserver {
         drawParticles(g2d, gameBase.getSprayParticles());
 
         // Atmospheric gradient
-        drawAtmosphericGradient(g2d, vw, vh);
+        drawAtmosphericGradient(g2d, transform.vw, transform.vh);
 
         drawParticles(g2d, gameBase.getSnowParticles());
 
@@ -170,7 +182,8 @@ public class GameComponent extends JComponent implements GameObserver {
         drawStatBar(g2d, player.getYSpeed(), player.getMaxSpeed(), STAT_SPEED_BAR_LINE);
 
         drawTextStat(g2d, "DISTANCE:", STAT_DISTANCE_LABEL_LINE);
-        drawTextStat(g2d, (int) (player.getDistanceTraveled() / 100) + " m", STAT_DISTANCE_VALUE_LINE);
+        int distanceMetres = (int) (player.getDistanceTraveled() / CENTIMETERS_PER_METER);
+        drawTextStat(g2d, distanceMetres + " m", STAT_DISTANCE_VALUE_LINE);
 
         drawTextStat(g2d, "TIME:", STAT_TIME_LABEL_LINE);
         drawTextStat(g2d, gameBase.getFormattedGameTime(), STAT_TIME_VALUE_LINE);
@@ -178,12 +191,12 @@ public class GameComponent extends JComponent implements GameObserver {
         // Game over / pause overlay
         if (gameBase.isGameOver() || gameBase.isGamePaused()) {
             Color overlayColor = gameBase.isGameOver() ? new Color(70, 0, 0) : new Color(0, 0, 70);
-            overlay(g2d, MENU_TRANSPARENCY, overlayColor, vw, vh);
+            overlay(g2d, MENU_TRANSPARENCY, overlayColor, transform.vw, transform.vh);
 
             drawTitle(g2d,
                       gameBase.isGameOver() ? "GAME OVER" : "GAME PAUSED",
                       gameBase.isGameOver() ? Color.RED : Color.BLUE,
-                      vw, vh);
+                      transform.vw, transform.vh);
 
             drawGameStats(g2d);
 
@@ -193,22 +206,48 @@ public class GameComponent extends JComponent implements GameObserver {
         g2d.dispose();
     }
 
-    // Helper to draw a list of drawable objects with shadows and then the objects themselves
+    /**
+     * Helper record holding the result of view transformation calculations.
+     */
+    private record ViewTransform(int vw, int vh, double scale, int offsetX, int offsetY) {}
+
+    /**
+     * Computes the scaling and offsets needed to fit the virtual game world
+     * into the actual component size.
+     */
+    private ViewTransform computeViewTransform() {
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+        int vw = gameBase.getWidth();
+        int vh = gameBase.getHeight();
+
+        double scaleX = (double) panelWidth / vw;
+        double scaleY = (double) panelHeight / vh;
+        double scale = Math.min(scaleX, scaleY);
+
+        int offsetX = (int) ((panelWidth - vw * scale) / 2);
+        int offsetY = (int) ((panelHeight - vh * scale) / 2);
+
+        return new ViewTransform(vw, vh, scale, offsetX, offsetY);
+    }
+
     private <T extends Obstacle> void drawShadowsAndObjects(Graphics2D g2d, List<T> objects, Player player) {
         objects.forEach(obj -> obj.drawShadow(g2d));
         objects.forEach(obj -> obj.draw(g2d, player.getCurrentSpeed()));
     }
 
-    // Helper to draw a list of particles
     private void drawParticles(Graphics2D g2d, List<? extends Particle> particles) {
         particles.forEach(p -> p.draw(g2d));
     }
 
+    /**
+     * Fills the entire virtual view with a semi‑transparent overlay.
+     */
     private void overlay(Graphics2D g2d, float transparency, Color color, int vw, int vh) {
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
         g2d.setColor(color);
         g2d.fillRect(0, 0, vw, vh);
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
 
     private void drawAtmosphericGradient(Graphics2D g2d, int vw, int vh) {
@@ -220,6 +259,9 @@ public class GameComponent extends JComponent implements GameObserver {
         g2d.fillRect(0, 0, vw, vh);
     }
 
+    /**
+     * Draws a text statistic at a given line number.
+     */
     private void drawTextStat(Graphics2D g2d, String stat, int line) {
         g2d.setFont(new Font("Arial", Font.BOLD, TEXT_SIZE));
         FontMetrics metrics = g2d.getFontMetrics();
@@ -228,6 +270,9 @@ public class GameComponent extends JComponent implements GameObserver {
         g2d.drawString(stat, TEXT_MARGIN, y);
     }
 
+    /**
+     * Draws a colored bar representing a numeric value.
+     */
     private void drawStatBar(Graphics2D g2d, double current, double max, int line) {
         int x = TEXT_MARGIN;
         int y = TEXT_MARGIN * line;
@@ -238,7 +283,7 @@ public class GameComponent extends JComponent implements GameObserver {
 
         double portion = Math.max(0, Math.min(1, current / max));
 
-        // Foreground (color changes with speed)
+        // Foreground (colour changes with speed)
         g2d.setColor(new Color(
                 (int) (255 * portion),
                 (int) (255 * (1 - portion)),
@@ -263,10 +308,13 @@ public class GameComponent extends JComponent implements GameObserver {
     }
 
     private void drawGameStats(Graphics2D g2d) {
+        GameModeType mode = gameBase.getGameModeType();
+        boolean isEndless = (mode == GameModeType.ENDLESS);
+
         String scoreText;
-        if (gameBase.getGameModeType() == GameModeType.ENDLESS) {
-            scoreText = "Distance Traveled: " +
-                        (int) gameBase.getPlayer().getDistanceTraveled() / 100;
+        if (isEndless) {
+            int distanceMetres = (int) (gameBase.getPlayer().getDistanceTraveled() / CENTIMETERS_PER_METER);
+            scoreText = "Distance Traveled: " + distanceMetres;
         } else {
             scoreText = "Time: " + gameBase.getFormattedGameTime();
         }
@@ -277,16 +325,16 @@ public class GameComponent extends JComponent implements GameObserver {
         int textWidth = metrics.stringWidth(scoreText);
         int textHeight = metrics.getAscent();
         int x = gameBase.getWidth() / 2 - textWidth / 2;
-        int y = gameBase.getHeight() / 4 + TEXT_MARGIN;
+        int y = gameBase.getHeight() / SCORE_Y_FRACTION_DEN + TEXT_MARGIN;
         g2d.setColor(Color.WHITE);
         g2d.drawString(scoreText, x, y);
 
         // Highscores list
-        int yOffset = y + textHeight * 2;
+        int yOffset = y + textHeight * SCORE_TO_HIGHSCORE_SPACING;
         g2d.setFont(new Font("Arial", Font.PLAIN, HIGHSCORE_FONT_SIZE));
         FontMetrics smallMetrics = g2d.getFontMetrics();
 
-        HighscoreList highscoreList = highscoreLists.get(gameBase.getGameModeType());
+        HighscoreList highscoreList = highscoreLists.get(mode);
         if (highscoreList == null) return;
 
         List<Highscore> highscores = highscoreList.getHighscores();
@@ -295,10 +343,11 @@ public class GameComponent extends JComponent implements GameObserver {
         for (int i = 0; i < amountToDraw; i++) {
             Highscore hs = highscores.get(i);
             String valueText;
-            if (gameBase.getGameModeType() == GameModeType.ENDLESS) {
+            if (isEndless) {
                 valueText = String.valueOf(hs.getPoints());
             } else {
-                valueText = hs.isDNF() ? "DNF" : formatTime(hs.getPoints());
+                // Use the static formatter from GameTimer
+                valueText = hs.isDNF() ? "DNF" : GameTimer.formatMillis(hs.getPoints());
             }
             String line = hs.getName() + " - " + valueText;
             int lineWidth = smallMetrics.stringWidth(line);
@@ -308,38 +357,24 @@ public class GameComponent extends JComponent implements GameObserver {
         }
     }
 
-    // Format centiseconds (1/100 s) as MM:SS.hh
-    private String formatTime(int centiseconds) {
-        int minutes = centiseconds / CENTISECONDS_PER_MINUTE;
-        int seconds = (centiseconds / CENTISECONDS_PER_SECOND) % SECONDS_PER_MINUTE;
-        int hundredths = centiseconds % CENTISECONDS_PER_SECOND;
-        return String.format("%02d:%02d.%02d", minutes, seconds, hundredths);
-    }
-
-    // Convert screen coordinates to virtual world coordinates (or null if outside)
+    /**
+     * Converts screen coordinates to virtual world coordinates.
+     *
+     * @param screenPoint point in screen pixel coordinates
+     * @return corresponding point in virtual world, or {@code null} if outside the game view
+     */
     private Point convertToVirtual(Point screenPoint) {
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
-        int vw = gameBase.getWidth();
-        int vh = gameBase.getHeight();
-
-        double scaleX = (double) panelWidth / vw;
-        double scaleY = (double) panelHeight / vh;
-        double scale = Math.min(scaleX, scaleY);
-
-        int offsetX = (int) ((panelWidth - vw * scale) / 2);
-        int offsetY = (int) ((panelHeight - vh * scale) / 2);
-
+        ViewTransform t = computeViewTransform();
         int sx = screenPoint.x;
         int sy = screenPoint.y;
 
-        if (sx < offsetX || sx >= offsetX + vw * scale ||
-            sy < offsetY || sy >= offsetY + vh * scale) {
+        if (sx < t.offsetX || sx >= t.offsetX + t.vw * t.scale ||
+            sy < t.offsetY || sy >= t.offsetY + t.vh * t.scale) {
             return null; // outside the game view
         }
 
-        int vx = (int) ((sx - offsetX) / scale);
-        int vy = (int) ((sy - offsetY) / scale);
+        int vx = (int) ((sx - t.offsetX) / t.scale);
+        int vy = (int) ((sy - t.offsetY) / t.scale);
         return new Point(vx, vy);
     }
 }

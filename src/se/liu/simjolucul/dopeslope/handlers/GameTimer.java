@@ -1,16 +1,21 @@
 package se.liu.simjolucul.dopeslope.handlers;
 
+/**
+ * A simple game timer that measures elapsed time in seconds and milliseconds.
+ * The timer can be started, paused, and reset.
+ */
 public class GameTimer {
-    private long startTime;      // nanoseconds when timer started or resumed
-    private long pauseTime;      // nanoseconds when timer was paused
-    private double accumulated;  // total seconds accumulated before pause
+    private long startTime;
+    private double accumulated;
     private boolean running;
+
+    private static final double NANOS_PER_SECOND = 1_000_000_000.0;
 
     public GameTimer() {
         reset();
     }
 
-    /** Start or resume the timer. */
+    /** Start or resume the timer. If already running, does nothing. */
     public void start() {
         if (!running) {
             startTime = System.nanoTime();
@@ -18,23 +23,15 @@ public class GameTimer {
         }
     }
 
-    /** Pause the timer. */
+    /** Pause the timer. If already paused, does nothing. */
     public void pause() {
         if (running) {
-            accumulated += (System.nanoTime() - startTime) / 1_000_000_000.0;
+            accumulated += (System.nanoTime() - startTime) / NANOS_PER_SECOND;
             running = false;
         }
     }
 
-    /** Resume after pause. */
-    public void resume() {
-        if (!running) {
-            startTime = System.nanoTime();
-            running = true;
-        }
-    }
-
-    /** Reset to zero. */
+    /** Reset the timer to zero and stop it. */
     public void reset() {
         accumulated = 0.0;
         running = false;
@@ -43,18 +40,21 @@ public class GameTimer {
     /** Get current elapsed time in seconds. */
     public double getTime() {
         if (running) {
-            return accumulated + (System.nanoTime() - startTime) / 1_000_000_000.0;
+            return accumulated + (System.nanoTime() - startTime) / NANOS_PER_SECOND;
         } else {
             return accumulated;
         }
     }
 
-    /** Get formatted time mm:ss.ms (or hh:mm:ss if needed). */
-    public String getFormattedTime() {
-        double total = getTime();
-        int minutes = (int) (total / 60);
-        int seconds = (int) (total % 60);
-        int millis = (int) ((total - (int) total) * 1000);
-        return String.format("%02d:%02d.%03d", minutes, seconds, millis);
+    /** Get current elapsed time in milliseconds (rounded down). */
+    public int getTimeInMillis() {
+        return (int) (getTime() * 1000);
+    }
+
+    public static String formatMillis(int millis) {
+        int minutes = millis / 60_000;
+        int seconds = (millis / 1_000) % 60;
+        int ms = millis % 1_000;
+        return String.format("%02d:%02d.%03d", minutes, seconds, ms);
     }
 }
