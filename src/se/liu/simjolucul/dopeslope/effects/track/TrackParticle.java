@@ -5,6 +5,9 @@ import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
+/**
+ * A square shaped particle that moves uppwards with the speed of the player
+ */
 public class TrackParticle extends Particle {
     private final int width;
     private final int height;
@@ -24,12 +27,10 @@ public class TrackParticle extends Particle {
 
     @Override
     public void draw(Graphics2D g2d) {
-        // Use the inherited color and pre‑computed alpha
         g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
 
         AffineTransform old = g2d.getTransform();
 
-        // Rotate around the rectangle's center
         double centerX = x + width / 2.0;
         double centerY = y + height / 2.0;
         g2d.rotate(rotation, centerX, centerY);

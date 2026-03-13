@@ -11,14 +11,10 @@ import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
  */
 public class SnowParticle extends Particle {
 
-    /**
-     * Horizontal movement per frame.
-     */
+    /** Horizontal movement per frame. */
     private final double drift;
 
-    /**
-     * Factor used to center the random drift range around zero.
-     */
+    /** Factor used to center the random drift range around zero. */
     private static final double RANGE_CENTER = 0.5;
 
 

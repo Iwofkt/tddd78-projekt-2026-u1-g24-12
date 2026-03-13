@@ -8,10 +8,30 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Renders the main menu with scaling, snow effect, and mouse/keyboard interaction.
+ */
 public class MenuComponent extends JComponent {
-    private MenuModel menuModel;
-    private List<Rectangle> itemBounds;
-    private List<ActionListener> actionListeners = new ArrayList<>();
+    // --- Layout and appearance constants ---
+    private static final Color BACKGROUND_COLOR = new Color(20, 20, 30);
+    private static final String FONT_NAME = "Arial";
+
+    // Title
+    private static final int TITLE_FONT_SIZE = 48;
+    private static final int TITLE_Y = 150;
+
+    // Menu items
+    private static final int ITEM_FONT_SIZE_NORMAL = 32;
+    private static final int ITEM_FONT_SIZE_SELECTED = 36;
+    private static final int ITEM_START_Y = 300;
+    private static final int ITEM_LINE_HEIGHT = 50;
+
+    private static final Color ITEM_SELECTED_COLOR = new Color(255, 215, 0); // gold
+    private static final Color ITEM_NORMAL_COLOR = Color.LIGHT_GRAY;
+
+    private final MenuModel menuModel;
+    private final List<Rectangle> itemBounds;
+    private final List<ActionListener> actionListeners = new ArrayList<>();
 
     public MenuComponent(MenuModel menuModel) {
         this.menuModel = menuModel;
@@ -22,8 +42,8 @@ public class MenuComponent extends JComponent {
 
         im.put(KeyStroke.getKeyStroke("UP"), "moveUp");
         im.put(KeyStroke.getKeyStroke("DOWN"), "moveDown");
-        im.put(KeyStroke.getKeyStroke("W"), "moveUp");      // optional alternative
-        im.put(KeyStroke.getKeyStroke("S"), "moveDown");    // optional alternative
+        im.put(KeyStroke.getKeyStroke("W"), "moveUp");      // alternative
+        im.put(KeyStroke.getKeyStroke("S"), "moveDown");    // alternative
         im.put(KeyStroke.getKeyStroke("ENTER"), "select");
 
         am.put("moveUp", new AbstractAction() {
@@ -31,7 +51,7 @@ public class MenuComponent extends JComponent {
             public void actionPerformed(ActionEvent e) {
                 menuModel.selectPrevious();
                 menuModel.setHoveredIndex(menuModel.getSelectedIndex());
-                repaint();  // because model doesn't notify on selection change
+                repaint();
             }
         });
 
@@ -55,7 +75,6 @@ public class MenuComponent extends JComponent {
             }
         });
 
-        // Mouse handling (similar to before, but using model's items)
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -120,28 +139,26 @@ public class MenuComponent extends JComponent {
         g2d.scale(scale, scale);
 
         // Background
-        g2d.setColor(new Color(20, 20, 30));
+        g2d.setColor(BACKGROUND_COLOR);
         g2d.fillRect(0, 0, menuModel.getWidth(), menuModel.getHeight());
 
-
-        for(Particle p : menuModel.getSnow()){
+        // Snow particles
+        for (Particle p : menuModel.getSnow()) {
             p.draw(g2d);
         }
 
         // Draw title
         g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Arial", Font.BOLD, 48));
+        g2d.setFont(new Font(FONT_NAME, Font.BOLD, TITLE_FONT_SIZE));
         String title = menuModel.getTitle();
         FontMetrics fm = g2d.getFontMetrics();
         int titleX = (menuModel.getWidth() - fm.stringWidth(title)) / 2;
-        int titleY = 150;
-        g2d.drawString(title, titleX, titleY);
+        g2d.drawString(title, titleX, TITLE_Y);
 
         // Draw menu items
-        g2d.setFont(new Font("Arial", Font.PLAIN, 32));
+        g2d.setFont(new Font(FONT_NAME, Font.PLAIN, ITEM_FONT_SIZE_NORMAL));
         fm = g2d.getFontMetrics();
-        int y = 300;
-        int lineHeight = 50;
+        int y = ITEM_START_Y;
         itemBounds.clear();
 
         List<MenuModel.MenuItem> items = menuModel.getItems();
@@ -154,24 +171,29 @@ public class MenuComponent extends JComponent {
             itemBounds.add(rect);
 
             boolean isSelected = (i == menuModel.getSelectedIndex());
-            boolean isHovered = (i == menuModel.getHoveredIndex());
-
             if (isSelected) {
-                g2d.setColor(new Color(255, 215, 0));
-                g2d.setFont(new Font("Arial", Font.BOLD, 36));
+                g2d.setColor(ITEM_SELECTED_COLOR);
+                g2d.setFont(new Font(FONT_NAME, Font.BOLD, ITEM_FONT_SIZE_SELECTED));
             } else {
-                g2d.setColor(Color.LIGHT_GRAY);
-                g2d.setFont(new Font("Arial", Font.PLAIN, 32));
+                g2d.setColor(ITEM_NORMAL_COLOR);
+                g2d.setFont(new Font(FONT_NAME, Font.PLAIN, ITEM_FONT_SIZE_NORMAL));
             }
 
             fm = g2d.getFontMetrics();
             x = (menuModel.getWidth() - fm.stringWidth(text)) / 2;
             g2d.drawString(text, x, y);
-            y += lineHeight;
+            y += ITEM_LINE_HEIGHT;
         }
         g2d.dispose();
     }
 
+    /**
+     * Converts screen pixel coordinates to virtual menu coordinates,
+     * taking scaling and centering into account.
+     *
+     * @param screenPoint point in screen coordinates
+     * @return corresponding point in the virtual menu, or null if outside
+     */
     private Point convertToVirtual(Point screenPoint) {
         int pw = getWidth();
         int ph = getHeight();
@@ -189,8 +211,8 @@ public class MenuComponent extends JComponent {
 
         // Check if inside the scaled content area
         if (sx < offsetX || sx >= offsetX + vw * scale ||
-                sy < offsetY || sy >= offsetY + vh * scale) {
-            return null; // outside the scaled drawing area
+            sy < offsetY || sy >= offsetY + vh * scale) {
+            return null;
         }
 
         int vx = (int) ((sx - offsetX) / scale);

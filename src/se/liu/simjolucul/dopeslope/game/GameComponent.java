@@ -33,8 +33,7 @@ public class GameComponent extends JComponent implements GameObserver {
     private static final int BUTTON_HEIGHT = 50;
     private static final int BUTTON_VERTICAL_SPACING = 60;
 
-    // This constant needs to be a fraction – use a double or two ints.
-    // For simplicity, keep the original two‑int approach.
+
     private static final int BUTTON_Y_OFFSET_NUM = 2;
     private static final int BUTTON_Y_OFFSET_DEN = 3;
 
@@ -74,7 +73,7 @@ public class GameComponent extends JComponent implements GameObserver {
 
     // Other numeric constants
     /** Divisor to convert distance to metres (distance is stored in cm). */
-    private static final int CENTIMETERS_PER_METER = 100;   // fixed spelling
+    private static final int CENTIMETERS_PER_METER = 100;
     /** Factor for spacing after main score. */
     private static final int SCORE_TO_HIGHSCORE_SPACING = 2;
     /** Vertical position fraction for main score (1/4 of screen height). */

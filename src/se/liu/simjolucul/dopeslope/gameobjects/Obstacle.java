@@ -17,7 +17,6 @@ public abstract class Obstacle {
     protected int width;
     protected int height;
     protected Rectangle hitbox;
-    protected BufferedImage texture = null;
 
     // Shake effect constants
     private static final int SHAKE_THRESHOLD = 14;
@@ -34,16 +33,16 @@ public abstract class Obstacle {
     private static final int HITBOX_Y_OFFSET = -5;
 
     /** start hitbox at 1/3 of width */
-    private static final double HITBOX_X_RATIO = 1.0 / 3.0;
+    private static final double HITBOX_X_RATIO = (1.0 / 3.0);
     /** hitbox is half the width */
     private static final double HITBOX_WIDTH_RATIO = 0.5;
     /** hitbox height is 1/3 of total height */
-    private static final double HITBOX_HEIGHT_RATIO = 1.0 / 3.0;
+    private static final double HITBOX_HEIGHT_RATIO = (1.0 / 3.0);
 
     // Shadow constants
 
     /** shadow height relative to obstacle */
-    private static final double SHADOW_HEIGHT_RATIO = 1.0 / 3.0;
+    private static final double SHADOW_HEIGHT_RATIO = (1.0 / 3.0);
     /** transparency of shadow */
     private static final int SHADOW_ALPHA = 100;
 
@@ -51,7 +50,6 @@ public abstract class Obstacle {
 
     protected Obstacle(int x, int y, BufferedImage texture) {
         this.position = new Point(x, y);
-        this.texture = texture;
         this.width = texture.getWidth();
         this.height = texture.getHeight();
         initHitbox();

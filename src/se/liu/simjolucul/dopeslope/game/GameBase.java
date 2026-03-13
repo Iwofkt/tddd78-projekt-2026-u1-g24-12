@@ -20,6 +20,30 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Central controller for the game logic. Manages the game world, player,
+ * obstacles, gates, finish line, particle effects, and game state.
+ * <p>
+ * Responsibilities include:
+ * <ul>
+ *   <li>Updating the player position and rotation based on input</li>
+ *   <li>Managing different game modes (endless, alpine) via {@link GameMode}</li>
+ *   <li>Handling collision detection and game over conditions</li>
+ *   <li>Spawning and updating visual effects (snowfall, snow spray, player tracks)</li>
+ *   <li>Maintaining game time via {@link GameTimer}</li>
+ *   <li>Notifying observers (e.g., {@link GameComponent}) when the world changes</li>
+ *   <li>Resetting the game state when restarting</li>
+ * </ul>
+ * <p>
+ * The game world size is fixed by the constructor parameters. The class interacts
+ * with an {@link InputHandler} to process player controls, and with a {@link GameMode}
+ * to generate obstacles and gates specific to the selected mode.
+ *
+ * @see GameMode
+ * @see GameObserver
+ * @see Player
+ * @see GameTimer
+ */
 public class GameBase {
 
     // Constants (all private and final)
@@ -136,10 +160,6 @@ public class GameBase {
 
     public int getMargin() {
         return MARGIN;
-    }
-
-    public double getGameTime() {
-        return gameTimer.getTime();
     }
 
     public String getFormattedGameTime() {
