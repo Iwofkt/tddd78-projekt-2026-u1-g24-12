@@ -13,26 +13,22 @@ import java.io.IOException;
 import java.util.Map;
 
 public class GamePanel extends JPanel implements ActionListener {
-    private final Main main;
-    private final int width;
-    private final int height;
     private final Map<GameModeType, HighscoreList> highscoreLists;
 
     private final GameBase gameBase;
     private final GameComponent component;
-    private final InputHandler inputHandler;
     private final Timer timer;
 
     private boolean running = false;
     private boolean highscoreSaved = false;
 
+    /**
+     * the set games set FPS
+     */
     public static final int FPS = 40;
 
     public GamePanel(Main main, int width, int height, Map<GameModeType, HighscoreList> highscoreLists) {
-        this.main = main;
-        this.width = width;
-        this.height = height;
-        this.highscoreLists = highscoreLists;
+	this.highscoreLists = highscoreLists;
 
         setBackground(Color.BLACK);
         setLayout(new BorderLayout());
@@ -40,7 +36,7 @@ public class GamePanel extends JPanel implements ActionListener {
         gameBase = new GameBase(width, height);
 
         component = new GameComponent(gameBase, main, highscoreLists);
-        inputHandler = new InputHandler(component, gameBase);
+	final InputHandler inputHandler = new InputHandler(component, gameBase);
         gameBase.setInputHandler(inputHandler);
 
         add(component, BorderLayout.CENTER);

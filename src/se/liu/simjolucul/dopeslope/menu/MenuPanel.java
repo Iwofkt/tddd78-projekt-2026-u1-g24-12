@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuPanel extends JPanel implements ActionListener {
-    private Main main;
     private MenuModel menuModel;
     private MenuComponent menuMenuComponent;
     private Timer timer;
@@ -16,8 +15,7 @@ public class MenuPanel extends JPanel implements ActionListener {
     private boolean running = false;
 
     public MenuPanel(Main main, int width, int height) {
-        this.main = main;
-        setLayout(new BorderLayout());
+	setLayout(new BorderLayout());
         setBackground(Color.BLACK);
 
         menuModel = new MenuModel(width, height);
