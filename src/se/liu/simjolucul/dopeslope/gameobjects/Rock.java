@@ -3,6 +3,13 @@ package se.liu.simjolucul.dopeslope.gameobjects;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Represents a rock obstacle in the game.
+ * <p>
+ * The rock can be drawn either using a provided texture image or, if no texture is supplied,
+ * a fallback hand-drawn polygon shape with shading and a crack detail.
+ * </p>
+ */
 public class Rock extends Obstacle {
 
     private final BufferedImage rockTexture;

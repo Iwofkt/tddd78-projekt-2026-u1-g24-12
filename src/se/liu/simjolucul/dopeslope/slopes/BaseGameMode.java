@@ -20,7 +20,7 @@ public abstract class BaseGameMode implements GameMode {
     protected final Player player;
     protected final List<Obstacle> obstacles;
     protected final List<Gate> gates;
-    protected final List<Finishline> finishline;
+    protected final List<FinishLine> finishline;
 
     protected double deltaDistanceTraveled = 0;
     protected double oldPlayerDistance = 0;

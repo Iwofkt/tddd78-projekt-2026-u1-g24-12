@@ -72,7 +72,7 @@ public class CombeDeCaron extends BaseGameMode {
     @Override
     protected void spawnFinishLine() {
         if (!finishLineSpawned && player.getDistanceTraveled() >= FINISH_LINE_DISTANCE) {
-            finishline.add(new Finishline(
+            finishline.add(new FinishLine(
                     FINISH_LINE_X, gameBase.getHeight(),
                     FINISH_LINE_WIDTH, FINISH_LINE_HEIGHT,
                     gameBase.getResourcePack()
@@ -88,7 +88,7 @@ public class CombeDeCaron extends BaseGameMode {
                 gameBase.setGameOver(true);
             }
         }
-        for (Finishline line : finishline) {
+        for (FinishLine line : finishline) {
             if (gateCollisionEndless.checkCollision(player, line)) {
                 gameBase.setFinishedRace(true);
                 gameBase.setGameOver(true);

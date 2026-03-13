@@ -5,20 +5,29 @@ import se.liu.simjolucul.dopeslope.handlers.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Finishline extends Obstacle {
+/**
+ * Represents the finish line in alpine game modes.
+ * <p>
+ * The hitbox is a wide rectangle at the base of the poles that triggers race completion
+ * when the player passes through it. The hitbox is not limited to between the poles
+ *
+ * @see Obstacle
+ * @see se.liu.simjolucul.dopeslope.slopes.CombeDeCaron
+ */
+public class FinishLine extends Obstacle {
+    private final static int SHADOW_WIDTH = 10;
+    private final static int SHADOW_HEIGHT = 10;
     private static final int POLE_HEIGHT = 60;
     private static final int POLE_WIDTH = 8;
 
     private static final int GATE_WIDTH = 350;
 
-    private BufferedImage textureLeft;
-    private BufferedImage textureRight;
+    private BufferedImage poleTexture;
 
-    public Finishline(int x, int screenHeight, int width, int height, String texturePack) {
+    public FinishLine(int x, int screenHeight, int width, int height, String texturePack) {
         super(x, screenHeight, width, height);
         setHitbox(new Rectangle(0, screenHeight, 1000, POLE_HEIGHT / 4));
-        textureLeft = ImageLoader.loadTexture(texturePack, "gateR");
-        textureRight = ImageLoader.loadTexture(texturePack, "gateR");
+        poleTexture = ImageLoader.loadTextureSize(texturePack, "gateR", 2, 2);
     }
 
     @Override
@@ -28,10 +37,10 @@ public class Finishline extends Obstacle {
 
         int poleTopY = position.y;
 
-        // --- Use texture if it exists ---
-        if (textureLeft != null || textureRight != null) {
-            g.drawImage(textureLeft, leftPoleX, poleTopY, width, height, null);
-            g.drawImage(textureRight, rightPoleX, poleTopY, width, height, null);
+        //Use texture if it exists
+        if (poleTexture != null) {
+            g.drawImage(poleTexture, leftPoleX, poleTopY, width, height, null);
+            g.drawImage(poleTexture, rightPoleX, poleTopY, width, height, null);
             return;
         }
 
@@ -49,17 +58,14 @@ public class Finishline extends Obstacle {
     public void drawShadow(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
 
-        int shadowWidth = 10;
-        int shadowHeight = 10;
-
-        int shadowXLeft = position.x - shadowWidth / 3;
-        int shadowXRight = position.x + GATE_WIDTH - shadowWidth / 3;
-        int shadowY = position.y + POLE_HEIGHT - shadowHeight / 2;
+        int shadowXLeft = position.x - SHADOW_WIDTH / 3;
+        int shadowXRight = position.x + GATE_WIDTH - SHADOW_WIDTH / 3;
+        int shadowY = position.y + POLE_HEIGHT - SHADOW_HEIGHT / 2;
 
         // Semi-transparent black
         g2d.setColor(new Color(0, 0, 0, 100));
-        g2d.fillOval(shadowXLeft, shadowY, shadowWidth, shadowHeight);
-        g2d.fillOval(shadowXRight, shadowY, shadowWidth, shadowHeight);
+        g2d.fillOval(shadowXLeft, shadowY, SHADOW_WIDTH, SHADOW_HEIGHT);
+        g2d.fillOval(shadowXRight, shadowY, SHADOW_WIDTH, SHADOW_HEIGHT);
     }
 
     @Override

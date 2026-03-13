@@ -18,7 +18,6 @@ public abstract class Obstacle {
     protected int height;
     protected Rectangle hitbox;
 
-    // Shake effect constants
     private static final int SHAKE_THRESHOLD = 14;
     /** scales excess speed to shake amount */
     private static final double SHAKE_INTENSITY_FACTOR = 0.1;
@@ -33,11 +32,11 @@ public abstract class Obstacle {
     private static final int HITBOX_Y_OFFSET = -5;
 
     /** start hitbox at 1/3 of width */
-    private static final double HITBOX_X_RATIO = (1.0 / 3.0);
+    private static final double HITBOX_X_RATIO = 1.0 / 3.0;
     /** hitbox is half the width */
     private static final double HITBOX_WIDTH_RATIO = 0.5;
     /** hitbox height is 1/3 of total height */
-    private static final double HITBOX_HEIGHT_RATIO = (1.0 / 3.0);
+    private static final double HITBOX_HEIGHT_RATIO = 1.0 / 3.0;
 
     // Shadow constants
 

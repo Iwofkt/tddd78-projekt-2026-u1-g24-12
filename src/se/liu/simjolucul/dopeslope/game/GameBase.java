@@ -72,7 +72,7 @@ public class GameBase {
 
     private final List<Obstacle> obstacles = new ArrayList<>();
     private final List<Gate> gates = new ArrayList<>();
-    private final List<Finishline> finishLine = new ArrayList<>();
+    private final List<FinishLine> finishLine = new ArrayList<>();
 
     private boolean gameOver = false;
     private boolean gamePaused = false;
@@ -138,7 +138,7 @@ public class GameBase {
         return gates;
     }
 
-    public List<Finishline> getFinishLine() {
+    public List<FinishLine> getFinishLine() {
         return finishLine;
     }
 
@@ -170,12 +170,11 @@ public class GameBase {
         return finishedRace;
     }
 
-    // Used for alpine highscores
     public int getElapsedMilliseconds() {
         return (int) (gameTimer.getTime() * MILLISECONDS_PER_SECOND);
     }
 
-    //-- SETTERS --//
+    // ===== Setters =====
 
     public void setGameOver(boolean gameOver) {
         if (gameOver) {
@@ -205,7 +204,7 @@ public class GameBase {
         notifyObservers();
     }
 
-    //-- WORLD UPDATE --//
+    // ===== Game Update =====
 
     public void update() {
         if (isGameOver() || isGamePaused()) return;
@@ -236,14 +235,16 @@ public class GameBase {
     }
 
     private void updateParticles() {
+        double ySpeed = player.getSpeed().getY();
+        double xSpeed = player.getSpeed().getX();
         snowFall.update((int) player.getCurrentSpeed());
-        playerTracks.update((int) player.getYSpeed());
+        playerTracks.update((int) ySpeed);
 
-        double moveAngle = Math.atan2(player.getYSpeed(), player.getXSpeed());
+        double moveAngle = Math.atan2(ySpeed, xSpeed);
 
         playerTracks.spawnTracks(player, moveAngle);
 
-        if (player.getCurrentSpeed() > SPRAY_THRESHOLD_SPEED) {   // magic number replaced
+        if (player.getCurrentSpeed() > SPRAY_THRESHOLD_SPEED) {
             Point[] tips = player.getSkiTipPositions();
 
             for (Point tip : tips) {
@@ -251,7 +252,7 @@ public class GameBase {
             }
         }
 
-        snowSpray.update((int) player.getYSpeed());
+        snowSpray.update((int) ySpeed);
     }
 
     private void handleCollision() {
@@ -263,10 +264,11 @@ public class GameBase {
     }
 
     private void removeOffScreenObjects() {
+        double ySpeed = player.getSpeed().getY();
         Iterator<Obstacle> itO = obstacles.iterator();
         while (itO.hasNext()) {
             Obstacle o = itO.next();
-            o.update(player.getYSpeed());
+            o.update(ySpeed);
 
             if (o.getPosition().y + o.getHeight() < 0) {
                 itO.remove();
@@ -276,17 +278,17 @@ public class GameBase {
         Iterator<Gate> itG = gates.iterator();
         while (itG.hasNext()) {
             Gate g = itG.next();
-            g.update(player.getYSpeed());
+            g.update(ySpeed);
 
             if (g.getPosition().y + g.getHeight() < 0) {
                 itG.remove();
             }
         }
 
-        Iterator<Finishline> itF = finishLine.iterator();   // updated field name
+        Iterator<FinishLine> itF = finishLine.iterator();   // updated field name
         while (itF.hasNext()) {
-            Finishline f = itF.next();
-            f.update(player.getYSpeed());
+            FinishLine f = itF.next();
+            f.update(ySpeed);
 
             if (f.getPosition().y + f.getHeight() < 0) {
                 itF.remove();

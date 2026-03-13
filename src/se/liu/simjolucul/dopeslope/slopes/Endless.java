@@ -64,7 +64,7 @@ public class Endless extends BaseGameMode {
     protected void handleCollision() {
         for (Gate gate : gates) {
             if (gateCollisionEndless.checkCollision(player, gate)) {
-                player.speedBoost();
+                player.boostSpeed();
             }
         }
     }

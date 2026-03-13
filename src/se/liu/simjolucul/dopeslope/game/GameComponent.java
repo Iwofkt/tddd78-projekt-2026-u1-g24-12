@@ -178,7 +178,7 @@ public class GameComponent extends JComponent implements GameObserver {
 
         // UI stats
         drawTextStat(g2d, "SPEED:", STAT_SPEED_LABEL_LINE);
-        drawStatBar(g2d, player.getYSpeed(), player.getMaxSpeed(), STAT_SPEED_BAR_LINE);
+        drawStatBar(g2d, player.getSpeed().getY(), player.getMaxSpeed(), STAT_SPEED_BAR_LINE);
 
         drawTextStat(g2d, "DISTANCE:", STAT_DISTANCE_LABEL_LINE);
         int distanceMetres = (int) (player.getDistanceTraveled() / CENTIMETERS_PER_METER);
