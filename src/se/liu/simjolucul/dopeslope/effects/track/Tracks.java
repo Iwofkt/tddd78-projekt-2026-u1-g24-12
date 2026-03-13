@@ -6,15 +6,21 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Creates tracks behund the players
+ * <p>
+ * Track particles are genreated behind both player skis
+ * with a constand alpha and solid color so overlapping tracks are'nt a visual problem
+ */
 public class Tracks {
     private final static int ALPHA_MAX = 255;
     private final static int ALPHA_MIN = 255;
 
     private final ParticleConfig config;
     private final int spawnRate;
-    private final List<TrackParticle> particles = new ArrayList<>();  // renamed
+    private final List<TrackParticle> particles = new ArrayList<>();
 
-    public Tracks(int spawnRate) {   // removed unused angle and width
+    public Tracks(int spawnRate) {
         this.spawnRate = spawnRate;
 
         config = new ParticleConfig();
@@ -28,10 +34,9 @@ public class Tracks {
         config.alphaMax = ALPHA_MAX;
         config.alphaMin = ALPHA_MIN;
         config.color = Color.GRAY;
-        // angle will be set per spawn
     }
 
-    public List<TrackParticle> getParticles() {   // renamed
+    public List<TrackParticle> getParticles() {
         return particles;
     }
 

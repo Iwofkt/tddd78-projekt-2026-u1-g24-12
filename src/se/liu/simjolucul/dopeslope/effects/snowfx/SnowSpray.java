@@ -18,7 +18,7 @@ import java.util.Random;
 public class SnowSpray {
     private static final Random RND = new Random();
 
-    private static final double OFFSET_STD_DEV = 3.0;
+    private static final double OFFSET_STANDARD_DEV = 3.0;
     private static final double SPREAD_ANGLE = 0.5;
     private static final double SPEED_FACTOR_MIN = 0.5;
     private static final double SPEED_FACTOR_RANGE = 0.5;
@@ -63,8 +63,8 @@ public class SnowSpray {
         if (RND.nextDouble() < remainder) count++;
 
         for (int i = 0; i < count; i++) {
-            double offsetX = RND.nextGaussian() * OFFSET_STD_DEV;
-            double offsetY = RND.nextGaussian() * OFFSET_STD_DEV;
+            double offsetX = RND.nextGaussian() * OFFSET_STANDARD_DEV;
+            double offsetY = RND.nextGaussian() * OFFSET_STANDARD_DEV;
 
             double baseAngle = directionAngle + Math.PI; // opposite direction
 
@@ -87,7 +87,7 @@ public class SnowSpray {
     public static class SprayParticle extends Particle {
         private double velocityX, velocityY;
 
-        private final Color color;
+        private final Color sprayColor;
         private final int alphaMin, alphaMax;
 
         /** store initial life for fading */
@@ -97,7 +97,7 @@ public class SnowSpray {
             super(config);
             this.velocityX = vx;
             this.velocityY = vy;
-            this.color = config.color;
+            this.sprayColor = config.color;
             this.alphaMin = config.alphaMin;
             this.alphaMax = config.alphaMax;
             this.maxLife = this.life; // capture the randomized life from super
@@ -117,7 +117,7 @@ public class SnowSpray {
             int alpha = (int) (alphaMin + (alphaMax - alphaMin) * lifeRatio);
             alpha = Math.max(alphaMin, Math.min(alphaMax, alpha)); // clamp
 
-            g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
+            g2d.setColor(new Color(sprayColor.getRed(), sprayColor.getGreen(), sprayColor.getBlue(), alpha));
             g2d.fillOval((int) x, (int) y, size, size);
         }
     }

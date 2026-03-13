@@ -26,7 +26,7 @@ public class GameBase {
     private static final int PLAYER_TEXTURE_SCALE = 2;
     private static final double PLAYER_START_ROTATION = 0.5 * Math.PI;
     private static final int MARGIN = 30;
-    private static final int CENTISECONDS_PER_SECOND = 100;
+    private static final int MILLISECONDS_PER_SECOND = 100;
     private static final double SPRAY_THRESHOLD_SPEED = 8.0;
     private final static String RESOURCE_PACK = "standardPixel";
 
@@ -40,7 +40,7 @@ public class GameBase {
     private final GameTimer gameTimer = new GameTimer();
     private final ObjectCollision objectCollision = new ObjectCollision();
     private InputHandler inputHandler = null;
-    private GameMode gameMode = null;               // made private
+    private GameMode gameMode = null;
 
     private final SnowFall snowFall;
     private final Tracks playerTracks;
@@ -48,11 +48,11 @@ public class GameBase {
 
     private final List<Obstacle> obstacles = new ArrayList<>();
     private final List<Gate> gates = new ArrayList<>();
-    private final List<Finishline> finishLine = new ArrayList<>();   // renamed from finishline (camelCase)
+    private final List<Finishline> finishLine = new ArrayList<>();
 
     private boolean gameOver = false;
     private boolean gamePaused = false;
-    private boolean newGameFlag = false;            // renamed from newGame to avoid conflict with method
+    private boolean newGameFlag = false;
     private boolean finishedRace = false;
 
     private final List<GameObserver> observers;
@@ -114,7 +114,6 @@ public class GameBase {
         return gates;
     }
 
-    // Renamed getter to match camelCase field name
     public List<Finishline> getFinishLine() {
         return finishLine;
     }
@@ -152,8 +151,8 @@ public class GameBase {
     }
 
     // Used for alpine highscores
-    public int getElapsedCentiseconds() {
-        return (int) (gameTimer.getTime() * CENTISECONDS_PER_SECOND);   // magic number replaced
+    public int getElapsedMilliseconds() {
+        return (int) (gameTimer.getTime() * MILLISECONDS_PER_SECOND);
     }
 
     //-- SETTERS --//
@@ -209,7 +208,7 @@ public class GameBase {
         gameMode.update();
 
         handleCollision();
-        removeOffScreenObjects();      // renamed from filterObstacles
+        removeOffScreenObjects();
 
         updateParticles();
 
@@ -243,7 +242,6 @@ public class GameBase {
         }
     }
 
-    // Renamed method to better describe its purpose (removes off-screen objects)
     private void removeOffScreenObjects() {
         Iterator<Obstacle> itO = obstacles.iterator();
         while (itO.hasNext()) {

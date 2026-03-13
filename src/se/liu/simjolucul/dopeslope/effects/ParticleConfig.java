@@ -6,7 +6,6 @@ import java.awt.*;
  * Configuration parameters for creating particles.
  * Different particle types use different subsets of these fields.
  */
-@SuppressWarnings("OverlyCoupledClass")  // optional: suppress many‑fields warning
 public class ParticleConfig {
 
     /** X-coordinate of the particle's starting position */

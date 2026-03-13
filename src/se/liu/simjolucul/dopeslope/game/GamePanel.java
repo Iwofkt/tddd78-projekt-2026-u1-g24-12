@@ -110,7 +110,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 break;
             case CombeDeCaron:
                 if (gameBase.hasFinishedRace()) {
-                    scoreValue = gameBase.getElapsedCentiseconds();
+                    scoreValue = gameBase.getElapsedMilliseconds();
                 } else {
                     scoreValue = Highscore.DNF_SCORE;
                 }

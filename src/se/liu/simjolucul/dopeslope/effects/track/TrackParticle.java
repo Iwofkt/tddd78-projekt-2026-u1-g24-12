@@ -8,15 +8,12 @@ import java.awt.geom.AffineTransform;
 public class TrackParticle extends Particle {
     private final int width;
     private final int height;
-    private final int alpha;  // constant alpha for the particle's lifetime
-
+    private final int alpha;
     public TrackParticle(ParticleConfig config) {
         super(config);
-        // Rectangle dimensions – could be randomized if min != max
-        this.width = config.recWidthMin;   // assuming min == max for now
+        this.width = config.recWidthMin;
         this.height = config.recHeightMin;
-        // Alpha is constant (since tracks shouldn't flicker)
-        this.alpha = config.alphaMin;      // or config.alphaMax, both are 255
+        this.alpha = config.alphaMin;
     }
 
     @Override
