@@ -8,18 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Manages a spray of snow particles that trails behind the player at high speeds.
+ * <p>
+ * When the player's speed exceeds {@link #speedThreshold}, particles are spawned
+ * near the player's position with random offsets and velocities, creating a
+ * snow‑spray effect.
+ */
 public class SnowSpray {
     private static final Random RND = new Random();
 
-    // Constants for magic numbers
     private static final double OFFSET_STD_DEV = 3.0;
     private static final double SPREAD_ANGLE = 0.5;
     private static final double SPEED_FACTOR_MIN = 0.5;
     private static final double SPEED_FACTOR_RANGE = 0.5;
 
     private final List<SprayParticle> particles = new ArrayList<>();
-    private final double spawnRate;          // particles per spawn call
-    private final double speedThreshold;      // minimum speed to spawn
+    /** particles per spawn call */
+    private final double spawnRate;
+    /** minimum speed to spawn*/
+    private final double speedThreshold;
     private final ParticleConfig baseConfig;
 
     public SnowSpray(double spawnRate, double speedThreshold) {
@@ -60,15 +68,14 @@ public class SnowSpray {
 
             double baseAngle = directionAngle + Math.PI; // opposite direction
 
-            // Angle with spread: center around baseAngle, random within [-SPREAD_ANGLE/2, +SPREAD_ANGLE/2]
-            double angle = baseAngle + (RND.nextDouble() - 0.5) * SPREAD_ANGLE;
+            /** Angle with spread: center around baseAngle, random within [-SPREAD_ANGLE/2, +SPREAD_ANGLE/2]*/
+            double angle = baseAngle + (RND.nextDouble() - SPREAD_ANGLE) * SPREAD_ANGLE;
 
             double speed = playerSpeed * (SPEED_FACTOR_MIN + RND.nextDouble() * SPEED_FACTOR_RANGE);
 
             double vx = Math.cos(angle) * speed;
             double vy = Math.sin(angle) * speed;
 
-            // Create a copy of the base config to avoid shared state
             ParticleConfig config = new ParticleConfig(baseConfig);
             config.x = (int) (x + offsetX);
             config.y = (int) (y + offsetY);
@@ -78,12 +85,13 @@ public class SnowSpray {
     }
 
     public static class SprayParticle extends Particle {
-        // Renamed to avoid short names and potential hiding of superclass fields
         private double velocityX, velocityY;
 
         private final Color color;
         private final int alphaMin, alphaMax;
-        private final int maxLife; // store initial life for fading
+
+        /** store initial life for fading */
+        private final int maxLife;
 
         public SprayParticle(ParticleConfig config, double vx, double vy) {
             super(config);

@@ -2,7 +2,7 @@ package se.liu.simjolucul.dopeslope.slopes;
 
 import se.liu.simjolucul.dopeslope.handlers.ImageLoader;
 import se.liu.simjolucul.dopeslope.game.GameBase;
-import se.liu.simjolucul.dopeslope.gameObjects.*;
+import se.liu.simjolucul.dopeslope.gameobjects.*;
 import se.liu.simjolucul.dopeslope.handlers.collision.GateCollisionEndless;
 
 import java.awt.image.BufferedImage;

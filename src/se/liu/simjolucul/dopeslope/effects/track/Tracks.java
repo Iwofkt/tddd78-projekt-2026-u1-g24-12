@@ -1,7 +1,7 @@
 package se.liu.simjolucul.dopeslope.effects.track;
 
 import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
-import se.liu.simjolucul.dopeslope.gameObjects.Player;
+import se.liu.simjolucul.dopeslope.gameobjects.Player;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -2,10 +2,10 @@ package se.liu.simjolucul.dopeslope.game;
 
 import se.liu.simjolucul.dopeslope.Main;
 import se.liu.simjolucul.dopeslope.effects.Particle;
-import se.liu.simjolucul.dopeslope.gameObjects.Finishline;
-import se.liu.simjolucul.dopeslope.gameObjects.Gate;
-import se.liu.simjolucul.dopeslope.gameObjects.Obstacle;
-import se.liu.simjolucul.dopeslope.gameObjects.Player;
+import se.liu.simjolucul.dopeslope.gameobjects.Finishline;
+import se.liu.simjolucul.dopeslope.gameobjects.Gate;
+import se.liu.simjolucul.dopeslope.gameobjects.Obstacle;
+import se.liu.simjolucul.dopeslope.gameobjects.Player;
 import se.liu.simjolucul.dopeslope.highscore.Highscore;
 import se.liu.simjolucul.dopeslope.highscore.HighscoreList;
 import se.liu.simjolucul.dopeslope.ui.Button;

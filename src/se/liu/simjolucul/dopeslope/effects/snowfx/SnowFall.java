@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * This class is used to create snowfalls that cover the entrie screen
- * with varying particle amounts
+ * Manages a continuous snowfall effect covering the entire screen.
+ * <p>
+ * Snowflakes are generated at the top of the screen at a fixed rate per frame,
+ * Each snowflake falls downward with random horizontal drift
  */
 public class SnowFall {
     private static final Random RND = new Random();
@@ -21,9 +23,9 @@ public class SnowFall {
 
     private final ParticleConfig config;
     private final int spawnRate;
-    private int width, height;   // stored for reset
+    private int width, height;
 
-    private final List<Particle> particles = new ArrayList<>();  // use base type
+    private final List<Particle> particles = new ArrayList<>();
 
     public SnowFall(int spawnRate, int width) {
         this.spawnRate = spawnRate;

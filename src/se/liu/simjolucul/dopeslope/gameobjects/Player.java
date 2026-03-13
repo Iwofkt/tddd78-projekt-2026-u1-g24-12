@@ -1,4 +1,4 @@
-package se.liu.simjolucul.dopeslope.gameObjects;
+package se.liu.simjolucul.dopeslope.gameobjects;
 
 import se.liu.simjolucul.dopeslope.game.Direction;
 

@@ -1,4 +1,4 @@
-package se.liu.simjolucul.dopeslope.gameObjects;
+package se.liu.simjolucul.dopeslope.gameobjects;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

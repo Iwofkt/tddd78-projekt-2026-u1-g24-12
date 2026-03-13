@@ -1,8 +1,8 @@
 package se.liu.simjolucul.dopeslope.handlers.collision;
 
-import se.liu.simjolucul.dopeslope.gameObjects.Gate;
-import se.liu.simjolucul.dopeslope.gameObjects.Obstacle;
-import se.liu.simjolucul.dopeslope.gameObjects.Player;
+import se.liu.simjolucul.dopeslope.gameobjects.Gate;
+import se.liu.simjolucul.dopeslope.gameobjects.Obstacle;
+import se.liu.simjolucul.dopeslope.gameobjects.Player;
 
 public class GateCollisionAlpine implements CollisionHandler {
     public boolean checkCollision(Player player, Obstacle obstacle) {
