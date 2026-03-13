@@ -12,28 +12,28 @@ import java.awt.image.BufferedImage;
  */
 public class Tree extends Obstacle {
 
-    // ----- Texture offset -----
+    // ------ Texture offset ------
     private static final int TEXTURE_Y_OFFSET_DIVISOR = 4;
 
-    // ----- Canopy geometry -----
+    // ------ Canopy geometry ------
     private static final int CANOPY_OVERHANG_FACTOR = 2;
     private static final int TRIANGLE_VERTEX_COUNT = 3;
 
-    // ----- Canopy colors -----
+    // ------ Canopy colors ------
     private static final Color CANOPY_FILL_COLOR = new Color(34, 139, 34);
     private static final Color CANOPY_HIGHLIGHT_COLOR = new Color(80, 220, 80, 180);
     private static final Color CANOPY_OUTLINE_COLOR = new Color(20, 100, 20);
 
-    // ----- Stump geometry -----
+    // ------ Stump geometry ------
     private static final int STUMP_WIDTH_DIVISOR = 4;
     private static final int STUMP_HEIGHT_DIVISOR = 6;
     private static final int STUMP_ARC_SIZE = 6;
 
-    // ----- Stump colors -----
+    // ------ Stump colors ------
     private static final Color STUMP_FILL_COLOR = new Color(139, 69, 19);
     private static final Color STUMP_OUTLINE_COLOR = new Color(111, 56, 6);
 
-    // ----- Stroke widths -----
+    // ------ Stroke widths ------
     private static final float HIGHLIGHT_STROKE_WIDTH = 2.0f;
     private static final float STUMP_OUTLINE_STROKE_WIDTH = 2.0f;
 
@@ -47,7 +47,7 @@ public class Tree extends Obstacle {
     @Override
     public void drawObstacle(Graphics g) {
 
-        // ----- Use texture if it exists -----
+        // ------ Use texture if it exists ------
         if (treeTexture != null) {
             g.drawImage(treeTexture,
                         position.x,
@@ -56,10 +56,10 @@ public class Tree extends Obstacle {
             return;
         }
 
-        // ----- Otherwise draw procedural -----
+        // ------ Otherwise draw procedural ------
         Graphics2D g2d = (Graphics2D) g.create();
 
-        // ----- Canopy triangle -----
+        // ------ Canopy triangle ------
         int canopyLeft   = position.x - width / CANOPY_OVERHANG_FACTOR;
         int canopyRight  = position.x + width + width / CANOPY_OVERHANG_FACTOR;
         int canopyTop    = position.y;
@@ -79,7 +79,7 @@ public class Tree extends Obstacle {
         g2d.setColor(CANOPY_OUTLINE_COLOR);
         g2d.drawPolygon(xPoints, yPoints, TRIANGLE_VERTEX_COUNT);
 
-        // ----- Stump -----
+        // ------ Stump ------
         int stumpWidth  = width  / STUMP_WIDTH_DIVISOR;
         int stumpHeight = height / STUMP_HEIGHT_DIVISOR;
         int stumpX = position.x + width / 2 - stumpWidth / 2;

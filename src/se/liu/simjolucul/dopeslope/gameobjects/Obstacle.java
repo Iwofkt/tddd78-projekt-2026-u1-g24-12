@@ -26,7 +26,7 @@ public abstract class Obstacle {
     /** used to create range [-amount, amount] */
     private static final int SHAKE_RANGE_MULTIPLIER = 2;
 
-    // ----- Hitbox offset constants (relative to obstacle position and size) -----
+    // ------ Hitbox offset constants (relative to obstacle position and size) ------
 
     private static final int HITBOX_X_OFFSET = -5;
     private static final int HITBOX_Y_OFFSET = -5;
@@ -38,7 +38,7 @@ public abstract class Obstacle {
     /** hitbox height is 1/3 of total height */
     private static final double HITBOX_HEIGHT_RATIO = 0.3333333;
 
-    // ----- Shadow constants -----
+    // ------ Shadow constants ------
 
     /** shadow height relative to obstacle */
     private static final double SHADOW_HEIGHT_RATIO = 0.3333333;

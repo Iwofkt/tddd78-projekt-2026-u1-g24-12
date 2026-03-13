@@ -1,7 +1,5 @@
 package se.liu.simjolucul.dopeslope.gameobjects;
 
-import se.liu.simjolucul.dopeslope.handlers.ImageLoader;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

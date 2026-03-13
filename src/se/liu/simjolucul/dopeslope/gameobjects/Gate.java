@@ -31,7 +31,7 @@ public class Gate extends Obstacle {
     /** Vertical position of the hitbox as a fraction of pole height (from top) */
     private static final double HITBOX_VERTICAL_RATIO = 0.5; // 1/2
 
-    // ----- Shadow constants -----
+    // ------ Shadow constants ------
 
     private static final int SHADOW_SIZE = 10;
     private static final double SHADOW_OFFSET_X_RATIO = 0.333333;
