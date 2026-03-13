@@ -16,15 +16,15 @@ public class Finishline extends Obstacle {
 
     public Finishline(int x, int screenHeight, int width, int height, String texturePack) {
         super(x, screenHeight, width, height);
-        this.hitbox = new Rectangle(0, screenHeight, 1000, POLE_HEIGHT / 4);
-        textureLeft = ImageLoader.loadTexture(texturePack, "flagBlue");
-        textureRight = ImageLoader.loadTexture(texturePack, "flagBlue");
+        setHitbox(new Rectangle(0, screenHeight, 1000, POLE_HEIGHT / 4));
+        textureLeft = ImageLoader.loadTexture(texturePack, "gateR");
+        textureRight = ImageLoader.loadTexture(texturePack, "gateR");
     }
 
     @Override
     public void drawObstacle(Graphics g) {
-        int leftPoleX = position.x;
-        int rightPoleX = position.x + GATE_WIDTH;
+        int leftPoleX = (int) position.getX();
+        int rightPoleX = (int) position.getX() + GATE_WIDTH;
 
         int poleTopY = position.y;
 

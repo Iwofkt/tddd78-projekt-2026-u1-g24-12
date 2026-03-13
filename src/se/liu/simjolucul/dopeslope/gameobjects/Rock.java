@@ -5,18 +5,18 @@ import java.awt.image.BufferedImage;
 
 public class Rock extends Obstacle {
 
-    private final BufferedImage texture;
+    private final BufferedImage rockTexture;
 
-    public Rock(int x, int screenHeight, BufferedImage texture) {
-        super(x, screenHeight, texture);
-        this.texture = texture;
+    public Rock(int x, int screenHeight, BufferedImage rockTexture) {
+        super(x, screenHeight, rockTexture);
+        this.rockTexture = rockTexture;
     }
 
     @Override
     public void drawObstacle(Graphics g) {
         // --- Use texture if provided ---
-        if (texture != null) {
-            g.drawImage(texture, position.x, position.y+height/5, width, height, null);
+        if (rockTexture != null) {
+            g.drawImage(rockTexture, position.x, position.y + height / 5, width, height, null);
             return;
         }
 
@@ -46,7 +46,7 @@ public class Rock extends Obstacle {
 
         // Dark outline
         g2d.setColor(new Color(80, 80, 80));
-        g2d.setStroke(new BasicStroke(2f));
+        g2d.setStroke(new BasicStroke(2.0f));
         g2d.drawPolygon(xPoints, yPoints, xPoints.length);
 
         // Add a crack for detail

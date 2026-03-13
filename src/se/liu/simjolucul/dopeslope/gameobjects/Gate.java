@@ -22,7 +22,7 @@ public class Gate extends Obstacle {
     // Shadow constants
 
     private static final int SHADOW_SIZE = 10;
-    private static final double SHADOW_OFFSET_X_RATIO = 1.0 / 3.0;
+    private static final double SHADOW_OFFSET_X_RATIO = (double) 1 / 3;
     private static final double SHADOW_OFFSET_Y_RATIO = 0.5;
     private static final int SHADOW_ALPHA = 100;
 

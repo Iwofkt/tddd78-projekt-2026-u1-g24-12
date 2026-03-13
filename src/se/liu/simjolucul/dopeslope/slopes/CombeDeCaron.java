@@ -43,14 +43,14 @@ public class CombeDeCaron extends BaseGameMode {
 
     @Override
     protected void spawnObstacles() {
-        int obstacleChance = rnd.nextInt(OBSTACLE_CHANCE_MAX);
+        int obstacleChance = RND.nextInt(OBSTACLE_CHANCE_MAX);
         if (obstacleChance >= OBSTACLE_CHANCE_THRESHOLD) {
             obstacles.add(new Tree(
-                    rnd.nextInt(TREE_LEFT_X_MIN, TREE_LEFT_X_MAX),
+                    RND.nextInt(TREE_LEFT_X_MIN, TREE_LEFT_X_MAX),
                     gameBase.getHeight(), treeImg
             ));
             obstacles.add(new Tree(
-                    rnd.nextInt(gameBase.getWidth() - TREE_RIGHT_X_PADDING, gameBase.getWidth()),
+                    RND.nextInt(gameBase.getWidth() - TREE_RIGHT_X_PADDING, gameBase.getWidth()),
                     gameBase.getHeight(), treeImg
             ));
         }
@@ -63,7 +63,7 @@ public class CombeDeCaron extends BaseGameMode {
             GateSpawn gateSpawn = GATE_SPAWNS.get(nextGateIndex);
             gates.add(new Gate(
                     gateSpawn.getX(), gameBase.getHeight(),
-                    gameBase.getWidth(), gateLImg, gateRImg
+                    gameBase.getWidth(), leftGateImg, rightGateImg
             ));
             nextGateIndex++;
         }

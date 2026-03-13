@@ -2,7 +2,6 @@ package se.liu.simjolucul.dopeslope.menu;
 
 import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.effects.snowfx.SnowFall;
-import se.liu.simjolucul.dopeslope.effects.snowfx.SnowParticle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +22,12 @@ public class MenuModel
     public MenuModel(int width, int height) {
         this.width = width;
         this.height = height;
-        setScreen(MenuScreens.MAIN);
+        setScreen(MenuScreen.MAIN);
         snowFall = new SnowFall(1, width);
         snowFall.initializeSnowfall(width, height);
     }
 
-    public void setScreen(MenuScreens screens) {
+    public void setScreen(MenuScreen screens) {
         switch (screens) {
             case MAIN:
                 title = "Dope Slope";
@@ -50,7 +49,7 @@ public class MenuModel
     }
 
     public void update() {
-        snowFall.update(10);
+        snowFall.update(SNOW_SPEED);
     }
 
     public List<Particle> getSnow() {
@@ -63,7 +62,9 @@ public class MenuModel
     public int getHeight() { return height; }
 
 
-    // Inner class for menu items
+    /**
+     * Inner class for menu items
+     */
     public static class MenuItem {
         public final String label;
         public final String command;
@@ -83,7 +84,7 @@ public class MenuModel
     public int getHoveredIndex() { return hoveredIndex; }
     public void setHoveredIndex(int index) { this.hoveredIndex = index; }
 
-    // Also update selectNext/Previous:
+
     public void selectNext() {
         if (items != null && !items.isEmpty()) {
             selectedIndex = (selectedIndex + 1) % items.size();

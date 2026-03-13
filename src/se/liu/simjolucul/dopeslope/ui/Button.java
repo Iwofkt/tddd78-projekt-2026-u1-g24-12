@@ -29,16 +29,13 @@ public class Button {
     }
 
     // -- SETTER -- //
+
     public void setNormalColor(Color color) { this.normalColor = color; }
     public void setHoverColor(Color color) { this.hoverColor = color; }
     public void setTextColor(Color color) { this.textColor = color; }
     public void setFont(Font font) { this.font = font; }
     public void setCornerRadius(int radius) { this.cornerRadius = radius; }
 
-    /**
-     * Call this from your mouseMoved handler (with virtual coordinates).
-     * @param p virtual mouse position (or null if outside content area)
-     */
     public void setHovered(Point p) {
         boolean now = p != null && bounds.contains(p);
         if (now != hovered) {
@@ -46,20 +43,12 @@ public class Button {
         }
     }
 
-    /**
-     * Call this from your mouseClicked handler (with virtual coordinates).
-     * If the click is inside, the action is executed.
-     */
     public void handleClick(Point p) {
         if (p != null && bounds.contains(p)) {
             onClick.run();
         }
     }
 
-    /**
-     * Draw the button. The Graphics2D should already be scaled and translated
-     * to virtual coordinates.
-     */
     public void draw(Graphics2D g2d) {
         // Save original color/font if you want to restore later (optional)
         Color originalColor = g2d.getColor();

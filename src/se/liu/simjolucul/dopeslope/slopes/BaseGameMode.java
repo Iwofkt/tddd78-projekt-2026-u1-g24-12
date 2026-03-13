@@ -9,25 +9,25 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class BaseGameMode implements GameMode {
-    // Common constants (can be overridden by subclasses if needed)
+    // Common constants
+
     protected static final int SPAWN_DISTANCE_THRESHOLD = 10;
     protected static final int OBSTACLE_TEXTURE_SCALE = 2;
-    protected static final int GATE_TEXTURE_SCALE = 1;
 
-    protected final Random rnd = new Random();
+    protected final static Random RND = new Random();
 
     protected final GameBase gameBase;
     protected final Player player;
     protected final List<Obstacle> obstacles;
     protected final List<Gate> gates;
-    protected final List<Finishline> finishline; // maybe null if unused
+    protected final List<Finishline> finishline;
 
     protected double deltaDistanceTraveled = 0;
     protected double oldPlayerDistance = 0;
 
     protected final BufferedImage treeImg;
-    protected final BufferedImage gateLImg;
-    protected final BufferedImage gateRImg;
+    protected final BufferedImage leftGateImg;
+    protected final BufferedImage rightGateImg;
 
     protected BaseGameMode(GameBase gameBase) {
 	this.gameBase = gameBase;
@@ -40,10 +40,10 @@ public abstract class BaseGameMode implements GameMode {
 		gameBase.getResourcePack(), "tree",
 		OBSTACLE_TEXTURE_SCALE, OBSTACLE_TEXTURE_SCALE
 	);
-	this.gateLImg = ImageLoader.loadTexture(
+	this.leftGateImg = ImageLoader.loadTexture(
 		gameBase.getResourcePack(), "gateL"
 	);
-	this.gateRImg = ImageLoader.loadTexture(
+	this.rightGateImg = ImageLoader.loadTexture(
 		gameBase.getResourcePack(), "gateR"
 	);
     }
@@ -66,5 +66,5 @@ public abstract class BaseGameMode implements GameMode {
     protected abstract void spawnGates();
 
     // Default no-op for modes without finish line
-    protected void spawnFinishLine() {}
+    abstract void spawnFinishLine();
 }

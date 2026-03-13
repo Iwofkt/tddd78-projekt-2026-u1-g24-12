@@ -27,19 +27,19 @@ public class Endless extends BaseGameMode {
 
     @Override
     protected void spawnObstacles() {
-        int obstacleChance = rnd.nextInt(OBSTACLE_CHANCE_MAX);
+        int obstacleChance = RND.nextInt(OBSTACLE_CHANCE_MAX);
         int margin = gameBase.getMargin();
 
         if (obstacleChance == 0) {
-            int x = rnd.nextInt(margin, gameBase.getWidth() - margin);
+            int x = RND.nextInt(margin, gameBase.getWidth() - margin);
             obstacles.add(new Rock(x, gameBase.getHeight(), rockImg));
         } else if (obstacleChance == 1) {
-            int x = rnd.nextInt(margin, gameBase.getWidth() - margin);
+            int x = RND.nextInt(margin, gameBase.getWidth() - margin);
             obstacles.add(new Tree(x, gameBase.getHeight(), treeImg));
         } else if (obstacleChance >= 20) {
-            int leftX = rnd.nextInt(-treeImg.getWidth(), margin);
+            int leftX = RND.nextInt(-treeImg.getWidth(), margin);
             obstacles.add(new Tree(leftX, gameBase.getHeight(), treeImg));
-            int rightX = rnd.nextInt(
+            int rightX = RND.nextInt(
                     gameBase.getWidth() - margin - treeImg.getWidth(),
                     gameBase.getWidth()
             );
@@ -49,14 +49,16 @@ public class Endless extends BaseGameMode {
 
     @Override
     protected void spawnGates() {
-        int gateChance = rnd.nextInt(GATE_CHANCE_MAX);
+        int gateChance = RND.nextInt(GATE_CHANCE_MAX);
         if (gateChance == GATE_SPAWN_THRESHOLD) {
-            int x = rnd.nextInt(GATE_MIN_X_OFFSET,
+            int x = RND.nextInt(GATE_MIN_X_OFFSET,
                                 gameBase.getWidth() - GATE_MAX_X_OFFSET);
             gates.add(new Gate(x, gameBase.getHeight(),
-                               gameBase.getWidth(), gateLImg, gateRImg));
+                               gameBase.getWidth(), leftGateImg, rightGateImg));
         }
     }
+
+    @Override void spawnFinishLine() {}
 
     @Override
     protected void handleCollision() {

@@ -43,7 +43,7 @@ public class MenuPanel extends JPanel implements ActionListener {
             String cmd = e.getActionCommand();
             switch (cmd) {
                 case "PLAY":
-                    menuModel.setScreen(MenuScreens.MODE_SELECT);
+                    menuModel.setScreen(MenuScreen.MODE_SELECT);
                     break;
                 case "MODE_ENDLESS":
                     main.startGame(GameModeType.ENDLESS);
@@ -52,10 +52,10 @@ public class MenuPanel extends JPanel implements ActionListener {
                     main.startGame(GameModeType.COMBE_DE_CARON);
                     break;
                 case "BACK":
-                    menuModel.setScreen(MenuScreens.MAIN);
+                    menuModel.setScreen(MenuScreen.MAIN);
                     break;
                 case "OPTIONS":
-                    menuModel.setScreen(MenuScreens.OPTIONS);
+                    menuModel.setScreen(MenuScreen.OPTIONS);
                     break;
                 case "EXIT":
                     System.exit(0);
