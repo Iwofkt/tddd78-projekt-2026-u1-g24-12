@@ -58,7 +58,7 @@ public class Endless extends BaseGameMode {
         }
     }
 
-    @Override void spawnFinishLine() {}
+    @Override protected void spawnFinishLine() {}
 
     @Override
     protected void handleCollision() {

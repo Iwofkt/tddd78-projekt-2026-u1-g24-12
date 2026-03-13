@@ -66,5 +66,5 @@ public abstract class BaseGameMode implements GameMode {
     protected abstract void spawnGates();
 
     // Default no-op for modes without finish line
-    abstract void spawnFinishLine();
+    protected abstract void spawnFinishLine();
 }
