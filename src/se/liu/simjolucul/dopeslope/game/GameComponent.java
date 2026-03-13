@@ -144,11 +144,11 @@ public class GameComponent extends JComponent implements GameObserver
             gate.draw(g2d, player.getCurrentSpeed());
         }
 
-        for (Finishline finishline : gameBase.getFinishline()) {
+        for (Finishline finishline : gameBase.getFinishLine()) {
             finishline.drawShadow(g2d);
         }
 
-        for (Finishline finishline : gameBase.getFinishline()) {
+        for (Finishline finishline : gameBase.getFinishLine()) {
             finishline.draw(g2d, player.getCurrentSpeed());
         }
 
@@ -177,15 +177,15 @@ public class GameComponent extends JComponent implements GameObserver
         drawTextStat(g2d, "TIME:", 11);
         drawTextStat(g2d, gameBase.getFormattedGameTime(), 13);
 
-        if (gameBase.getGameOver() || gameBase.getGamePaused()) {
+        if (gameBase.isGameOver() || gameBase.isGamePaused()) {
 
             overlay(g2d, MENU_TRANSPARENCY,
-                    gameBase.getGameOver() ? new Color(70, 0, 0) : new Color(0, 0, 70),
+                    gameBase.isGameOver() ? new Color(70, 0, 0) : new Color(0, 0, 70),
                     vw, vh);
 
             drawTitle(g2d,
-                    gameBase.getGameOver() ? "GAME OVER" : "GAME PAUSED",
-                    gameBase.getGameOver() ? Color.RED : Color.BLUE,
+                    gameBase.isGameOver() ? "GAME OVER" : "GAME PAUSED",
+                    gameBase.isGameOver() ? Color.RED : Color.BLUE,
                     vw, vh);
 
             drawGameStats(g2d);

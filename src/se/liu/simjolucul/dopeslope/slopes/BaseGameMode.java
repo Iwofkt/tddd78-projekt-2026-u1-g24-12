@@ -34,7 +34,7 @@ public abstract class BaseGameMode implements GameMode {
 	this.player = gameBase.getPlayer();
 	this.obstacles = gameBase.getObstacles();
 	this.gates = gameBase.getGates();
-	this.finishline = gameBase.getFinishline();
+	this.finishline = gameBase.getFinishLine();
 
 	this.treeImg = ImageLoader.loadTextureSize(
 		gameBase.getResourcePack(), "tree",

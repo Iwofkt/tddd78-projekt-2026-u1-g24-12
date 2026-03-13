@@ -68,14 +68,14 @@ public class GamePanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         gameBase.update();
 
-        if (gameBase.getGameOver()) {
+        if (gameBase.isGameOver()) {
             if (!highscoreSaved) {
                 saveHighscore();
                 highscoreSaved = true;
             }
         }
 
-        if (gameBase.newGame()) {
+        if (gameBase.pollNewGameFlag()) {
             highscoreSaved = false;
         }
     }

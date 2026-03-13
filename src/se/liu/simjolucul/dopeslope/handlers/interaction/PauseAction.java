@@ -14,6 +14,6 @@ public class PauseAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        gameBase.setGamePaused(!gameBase.getGamePaused());
+        gameBase.setGamePaused(!gameBase.isGamePaused());
     }
 }

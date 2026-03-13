@@ -98,7 +98,6 @@ public class GameBase {
         return player;
     }
 
-    // Boolean getters use "is" prefix (JavaBeans convention)
     public boolean isGamePaused() {
         return gamePaused;
     }
@@ -294,7 +293,7 @@ public class GameBase {
     public void restart(GameModeType gameModeType) {
         gameOver = false;
         gamePaused = false;
-        newGameFlag = true;          // renamed field
+        newGameFlag = true;
         finishedRace = false;
         this.gameModeType = gameModeType;
 
@@ -333,7 +332,7 @@ public class GameBase {
      * Returns true if a new game was started since the last call to this method,
      * and resets the flag. Used by the UI to detect when to reinitialize views.
      */
-    public boolean pollNewGameFlag() {   // renamed from newGame()
+    public boolean pollNewGameFlag() {
         boolean wasNewGame = newGameFlag;
         newGameFlag = false;
         return wasNewGame;
