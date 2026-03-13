@@ -24,10 +24,10 @@ public class FinishLine extends Obstacle {
 
     private BufferedImage poleTexture;
 
-    public FinishLine(int x, int screenHeight, int width, int height, String texturePack) {
+    public FinishLine(int x, int screenHeight, int width, int height, BufferedImage poleTexture) {
         super(x, screenHeight, width, height);
+        this.poleTexture = poleTexture;
         setHitbox(new Rectangle(0, screenHeight, 1000, POLE_HEIGHT / 4));
-        poleTexture = ImageLoader.loadTextureSize(texturePack, "gateR", 2, 2);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class CombeDeCaron extends BaseGameMode {
             finishline.add(new FinishLine(
                     FINISH_LINE_X, gameBase.getHeight(),
                     FINISH_LINE_WIDTH, FINISH_LINE_HEIGHT,
-                    gameBase.getResourcePack()
+                    rightGateImg
             ));
             finishLineSpawned = true;
         }

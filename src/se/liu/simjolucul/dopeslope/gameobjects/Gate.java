@@ -5,7 +5,19 @@ import java.awt.image.BufferedImage;
 
 import static se.liu.simjolucul.dopeslope.ConfigLoader.isDebug;
 
-
+/**
+ * Represents a gate obstacle in the game, consisting of two vertical poles with a gap between them.
+ * <p>
+ * The gate uses three hitboxes:
+ * <ul>
+ *   <li>The main hitbox (inherited from {@link Obstacle}) covers the gap area – passing through it
+ *       is typically considered a successful gate pass (scoring).</li>
+ *   <li>{@link #leftHitbox} and {@link #rightHitbox} cover the areas outside the poles; collision
+ *       with these indicates hitting the gate, which usually ends the game.</li>
+ * </ul>
+ * @see Obstacle
+ * @see se.liu.simjolucul.dopeslope.handlers.collision.ObjectCollision
+ */
 public class Gate extends Obstacle {
     /** Width of the gap between the two poles */
     private static final int GATE_WIDTH = 140;
@@ -19,10 +31,10 @@ public class Gate extends Obstacle {
     /** Vertical position of the hitbox as a fraction of pole height (from top) */
     private static final double HITBOX_VERTICAL_RATIO = 0.5; // 1/2
 
-    // Shadow constants
+    // ----- Shadow constants -----
 
     private static final int SHADOW_SIZE = 10;
-    private static final double SHADOW_OFFSET_X_RATIO = (double) 1 / 3;
+    private static final double SHADOW_OFFSET_X_RATIO = 0.333333;
     private static final double SHADOW_OFFSET_Y_RATIO = 0.5;
     private static final int SHADOW_ALPHA = 100;
 

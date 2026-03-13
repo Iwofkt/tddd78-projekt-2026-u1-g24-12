@@ -10,6 +10,8 @@ public class GameTimer {
     private boolean running;
 
     private static final double NANOS_PER_SECOND = 1_000_000_000.0;
+    private static final int MILLIS_PER_SECOND = 1000;
+    private static final int SEC_PER_MINUTE = 60;
 
     public GameTimer() {
         reset();
@@ -23,7 +25,6 @@ public class GameTimer {
         }
     }
 
-    /** Pause the timer. If already paused, does nothing. */
     public void pause() {
         if (running) {
             accumulated += (System.nanoTime() - startTime) / NANOS_PER_SECOND;
@@ -31,7 +32,6 @@ public class GameTimer {
         }
     }
 
-    /** Reset the timer to zero and stop it. */
     public void reset() {
         accumulated = 0.0;
         running = false;
@@ -48,13 +48,13 @@ public class GameTimer {
 
     /** Get current elapsed time in milliseconds (rounded down). */
     public int getTimeInMillis() {
-        return (int) (getTime() * 1000);
+        return (int) (getTime() * MILLIS_PER_SECOND);
     }
 
     public static String formatMillis(int millis) {
-        int minutes = millis / 60_000;
-        int seconds = (millis / 1_000) % 60;
-        int ms = millis % 1_000;
+        int minutes = millis / MILLIS_PER_SECOND * SEC_PER_MINUTE;
+        int seconds = (millis / MILLIS_PER_SECOND) % 60;
+        int ms = millis % MILLIS_PER_SECOND;
         return String.format("%02d:%02d.%03d", minutes, seconds, ms);
     }
 }

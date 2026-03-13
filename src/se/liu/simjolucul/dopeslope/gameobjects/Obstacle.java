@@ -26,22 +26,22 @@ public abstract class Obstacle {
     /** used to create range [-amount, amount] */
     private static final int SHAKE_RANGE_MULTIPLIER = 2;
 
-    // Hitbox offset constants (relative to obstacle position and size)
+    // ----- Hitbox offset constants (relative to obstacle position and size) -----
 
     private static final int HITBOX_X_OFFSET = -5;
     private static final int HITBOX_Y_OFFSET = -5;
 
     /** start hitbox at 1/3 of width */
-    private static final double HITBOX_X_RATIO = 1.0 / 3.0;
+    private static final double HITBOX_X_RATIO = 0.3333333;
     /** hitbox is half the width */
     private static final double HITBOX_WIDTH_RATIO = 0.5;
     /** hitbox height is 1/3 of total height */
-    private static final double HITBOX_HEIGHT_RATIO = 1.0 / 3.0;
+    private static final double HITBOX_HEIGHT_RATIO = 0.3333333;
 
-    // Shadow constants
+    // ----- Shadow constants -----
 
     /** shadow height relative to obstacle */
-    private static final double SHADOW_HEIGHT_RATIO = (1.0 / 3.0);
+    private static final double SHADOW_HEIGHT_RATIO = 0.3333333;
     /** transparency of shadow */
     private static final int SHADOW_ALPHA = 100;
 

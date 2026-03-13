@@ -81,7 +81,7 @@ public class GameBase {
 
     private final List<GameObserver> observers;
 
-    //-- CONSTRUCTOR --//
+    // ===== Constructor =====
 
     public GameBase(int width, int height) {
         this.height = height;
@@ -108,7 +108,7 @@ public class GameBase {
         playerTracks = new Tracks(20);
     }
 
-    //-- GETTERS --//
+    // ===== Getters =====
 
     public int getHeight() {
         return height;
@@ -296,7 +296,7 @@ public class GameBase {
         }
     }
 
-    //-- OBSERVERS --//
+    // ===== Observers =====
 
     public void addObserver(GameObserver observer) {
         observers.add(observer);
@@ -308,7 +308,7 @@ public class GameBase {
         }
     }
 
-    //-- GAME RESET --//
+    // ===== Game Reset =====
 
     public void restart(GameModeType gameModeType) {
         gameOver = false;

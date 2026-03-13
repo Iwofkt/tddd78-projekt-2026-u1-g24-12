@@ -17,23 +17,23 @@ import static se.liu.simjolucul.dopeslope.ConfigLoader.isDebug;
  */
 public class Player {
 
-    // ===== Constants =====
+    // ====== Constants ======
 
-    // ----- Base size -----
+    // ------ Base size ------
     private static final int SIZE = 20;
 
-    // ----- Movement physics -----
+    // ------ Movement physics ------
     private static final double PLAYER_ROTATE_SPEED = 0.08;
     private static final double MIN_SPEED = 1.0;
     private static final double MAX_SPEED = 12.0;
     private static final double ACCELERATION = 0.06;
     private static final double SPEED_BOOST = 18.0;
 
-    // ----- Rotation limits (0.1PI to 0.9PI) -----
+    // ------ Rotation limits (0.1PI to 0.9PI) ------
     private static final double MIN_ROTATION = 0.1 * Math.PI;
     private static final double MAX_ROTATION = 0.9 * Math.PI;
 
-    // ----- Shake effect -----
+    // ------ Shake effect ------
     private static final double SHAKE_SPEED_THRESHOLD = 10.0;
     private static final double SHAKE_INTENSITY_FACTOR = 0.1;
     private static final double ROTATION_WOBBLE_FACTOR = 0.005;
@@ -43,9 +43,9 @@ public class Player {
 
     private static final double SMOOTHING_FACTOR = 0.1;
 
-    // ----- Ski geometry constants (relative to SIZE) -----
+    // ------ Ski geometry constants (relative to SIZE) ------
     private static final double SKI_LENGTH_FACTOR = 3.0;
-    private static final double SKI_WIDTH_FACTOR = 1.0 / 6.0;
+    private static final double SKI_WIDTH_FACTOR = 0.166666666;
     /** extra gap between skis */
     private static final double SKI_GAP_EXTRA = 7.0;
     /** used for tip position */
@@ -53,7 +53,7 @@ public class Player {
     /** fine‑tune right ski tip */
     private static final int RIGHT_SKI_TIP_X_OFFSET = -2;
 
-    // ----- Skier body proportions (relative to SIZE) -----
+    // ------ Skier body proportions (relative to SIZE) ------
     private static final double TORSO_WIDTH_FACTOR = 1.5;
     private static final double TORSO_HEIGHT_FACTOR = 1.2;
     private static final double HEAD_SIZE_FACTOR = 0.9;
@@ -61,16 +61,16 @@ public class Player {
     private static final double GOGGLE_WIDTH_FACTOR = 0.6;
     private static final int GOGGLE_HEIGHT_DIVISOR = 6;
 
-    // ----- Colors -----
+    // ------ Colors ------
     private static final Color SKI_COLOR = new Color(25, 25, 25);
     private static final Color TORSO_COLOR = new Color(210, 50, 50);
     private static final Color HEAD_COLOR = new Color(40, 40, 40);
     private static final Color GOGGLE_COLOR = new Color(5, 88, 165);
 
-    // ----- Vertical position scaling -----
+    // ------ Vertical position scaling ------
     private static final double VERTICAL_POSITION_SCALE = 10.0;
 
-    // ===== Instance fields =====
+    // ====== Instance fields ======
     private final Rectangle hitbox;
     private double rotation;
     private double currentSpeed;
@@ -82,7 +82,7 @@ public class Player {
     private double shakeTime = 0;
     private final BufferedImage texture;
 
-    // ===== Constructor =====
+    // ====== Constructor ======
     public Player(Point spawnPosition, double startRotation, BufferedImage texture) {
         this.spawn.setLocation(spawnPosition);
         this.position.setLocation(spawnPosition);
@@ -92,7 +92,7 @@ public class Player {
         this.texture = texture;
     }
 
-    // ===== Public methods =====
+    // ====== Public methods ======
 
     public void rotate(Direction direction) {
         if (direction == Direction.LEFT && rotation < MAX_ROTATION) {
@@ -200,7 +200,7 @@ public class Player {
         drawRotation += Math.sin(shakeTime) * ROTATION_WOBBLE_FACTOR * currentSpeed;
 
         // Save original transform
-        AffineTransform oldTransform = g2d.getTransform();
+        AffineTransform old = g2d.getTransform();
 
         // Move to player center, apply shake, then rotate
         g2d.translate(centerX + shakeX, centerY + shakeY);
@@ -214,7 +214,7 @@ public class Player {
         }
 
         // Restore original transform (safe because we saved it)
-        g2d.setTransform(oldTransform);
+        g2d.setTransform(old);
 
         // Debug: draw hitbox
         if (isDebug()) {
@@ -263,11 +263,6 @@ public class Player {
     }
 
     // ===== Getters =====
-
-    @SuppressWarnings("unused")
-    public double getRotation() {
-        return rotation;
-    }
 
     /**
      * Returns the current velocity as a Point2D.Double (x = horizontal, y = vertical).
