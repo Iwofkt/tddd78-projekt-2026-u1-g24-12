@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.menu;
 
-import se.liu.simjolucul.dopeslope.effects.snowfx.SnowParticle;
+import se.liu.simjolucul.dopeslope.effects.Particle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -124,7 +124,7 @@ public class MenuComponent extends JComponent {
         g2d.fillRect(0, 0, menuModel.getWidth(), menuModel.getHeight());
 
 
-        for(SnowParticle p : menuModel.getSnow()){
+        for(Particle p : menuModel.getSnow()){
             p.draw(g2d);
         }
 

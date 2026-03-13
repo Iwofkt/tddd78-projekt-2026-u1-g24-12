@@ -1,11 +1,16 @@
 package se.liu.simjolucul.dopeslope.effects.snowfx;
 
+import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This class is used to create snowfalls that cover the entrie screen
+ * with varying particle amounts
+ */
 public class SnowFall {
     private static final Random RND = new Random();
 
@@ -14,20 +19,18 @@ public class SnowFall {
     private static final int ALPHA_MAX = 140;
     private static final int ALPHA_MIN = 100;
 
-    private ParticleConfig config;
+    private final ParticleConfig config;
+    private final int spawnRate;
+    private int width, height;   // stored for reset
 
-    private int spawnRate;
-    private int width, height; // store both dimensions for reset
+    private final List<Particle> particles = new ArrayList<>();  // use base type
 
-    private final List<SnowParticle> snowParticles = new ArrayList<>();
-
-    public SnowFall(int spawnRate, double angle, int width) {
+    public SnowFall(int spawnRate, int width) {
         this.spawnRate = spawnRate;
         this.width = width;
 
         config = new ParticleConfig();
         config.y = 0;
-        config.angle = angle;
         config.spread = SPREAD;
         config.radiusSizeMax = 8;
         config.radiusSizeMin = 4;
@@ -38,35 +41,37 @@ public class SnowFall {
         config.color = Color.WHITE;
     }
 
-    public List<SnowParticle> getSnowParticles() {
-        return snowParticles;
+    public List<Particle> getParticles() {
+        return particles;
     }
 
     public void update(int speed) {
+        // Spawn new snowflakes at the top
         for (int i = 0; i < spawnRate; i++) {
             config.x = RND.nextInt(width);
             config.y = 0;
-            snowParticles.add(new SnowParticle(config));
+            particles.add(new SnowParticle(config));
         }
-        snowParticles.removeIf(p -> !p.isAlive());
-        for (SnowParticle p : snowParticles) {
+        // Remove dead particles and update the rest
+        particles.removeIf(p -> !p.isAlive());
+        for (Particle p : particles) {
             p.update(speed);
         }
     }
 
     public void initializeSnowfall(int width, int height) {
-        this.width = width;   // update in case width changed (though it shouldn't)
-        this.height = height; // store for reset
+        this.width = width;
+        this.height = height;
 
         for (int i = 0; i < INITIAL_PARTICLES; i++) {
             config.x = RND.nextInt(width);
             config.y = RND.nextInt(height);
-            snowParticles.add(new SnowParticle(config));
+            particles.add(new SnowParticle(config));
         }
     }
 
     public void reset() {
-        snowParticles.clear();
+        particles.clear();
         initializeSnowfall(width, height);
     }
 }

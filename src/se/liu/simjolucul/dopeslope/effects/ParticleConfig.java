@@ -2,66 +2,71 @@ package se.liu.simjolucul.dopeslope.effects;
 
 import java.awt.*;
 
+/**
+ * Configuration parameters for creating particles.
+ * Different particle types use different subsets of these fields.
+ */
 public class ParticleConfig {
-    public int  x;
+    // Position (used by all particles)
+    public int x;
     public int y;
 
-    public double speed;        // base speed of particle
-    public double angle;        // direction of movement
-    public double spread;       // randomness in direction
+    // Movement direction – used by TrackParticle for rotation
+    public double angle;
 
-    public int radiusSizeMin;         // min size
-    public int radiusSizeMax;         // max size
+    // Randomness in horizontal movement – used by SnowParticle
+    public double spread;
 
-    public int recHeightMax;
+    // Size ranges for circular particles (Particle, SnowParticle, SprayParticle)
+    public int radiusSizeMin;
+    public int radiusSizeMax;
+
+    // Size ranges for rectangular particles (TrackParticle)
     public int recHeightMin;
-    public int recWidthMax;
+    public int recHeightMax;
     public int recWidthMin;
+    public int recWidthMax;
 
-    public int lifeMin;         // min lifespan
-    public int lifeMax;         // max lifespan
+    // Lifespan range (all particles)
+    public int lifeMin;
+    public int lifeMax;
 
-    public Color color;         // base color
-    public int alphaMin;        // transparency range
+    // Color and transparency (all particles)
+    public Color color;
+    public int alphaMin;
     public int alphaMax;
 
     public ParticleConfig() {
-        // default values
+        // Reasonable defaults
         this.x = 10;
         this.y = 10;
-
-        this.speed = 0;
         this.angle = 0;
         this.spread = 6;
-
         this.radiusSizeMin = 20;
         this.radiusSizeMax = 40;
-
-        recHeightMax = 20;
-        recHeightMin = 1;
-        recWidthMax = 20;
-        recWidthMin = 1;
-
+        this.recHeightMin = 1;
+        this.recHeightMax = 20;
+        this.recWidthMin = 1;
+        this.recWidthMax = 20;
         this.lifeMin = 10;
         this.lifeMax = 30;
-        this.color = java.awt.Color.WHITE;
+        this.color = Color.WHITE;
         this.alphaMin = 90;
         this.alphaMax = 180;
     }
 
-    //Copier
+    // Copy constructor
     public ParticleConfig(ParticleConfig other) {
         this.x = other.x;
         this.y = other.y;
-        this.speed = other.speed;
         this.angle = other.angle;
         this.spread = other.spread;
         this.radiusSizeMin = other.radiusSizeMin;
         this.radiusSizeMax = other.radiusSizeMax;
-        this.recHeightMax = other.recHeightMax;
         this.recHeightMin = other.recHeightMin;
-        this.recWidthMax = other.recWidthMax;
+        this.recHeightMax = other.recHeightMax;
         this.recWidthMin = other.recWidthMin;
+        this.recWidthMax = other.recWidthMax;
         this.lifeMin = other.lifeMin;
         this.lifeMax = other.lifeMax;
         this.color = other.color;

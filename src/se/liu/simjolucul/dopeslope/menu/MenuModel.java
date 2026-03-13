@@ -1,5 +1,6 @@
 package se.liu.simjolucul.dopeslope.menu;
 
+import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.effects.snowfx.SnowFall;
 import se.liu.simjolucul.dopeslope.effects.snowfx.SnowParticle;
 
@@ -23,7 +24,7 @@ public class MenuModel
         this.width = width;
         this.height = height;
         setScreen(MenuScreens.MAIN);
-        snowFall = new SnowFall(1, 2, width);
+        snowFall = new SnowFall(1, width);
         snowFall.initializeSnowfall(width, height);
     }
 
@@ -52,8 +53,8 @@ public class MenuModel
         snowFall.update(10);
     }
 
-    public List<SnowParticle> getSnow() {
-        return snowFall.getSnowParticles();
+    public List<Particle> getSnow() {
+        return snowFall.getParticles();
     }
 
     public String getTitle() { return title; }

@@ -1,5 +1,6 @@
 package se.liu.simjolucul.dopeslope.game;
 
+import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.slopes.CombeDeCaron;
 import se.liu.simjolucul.dopeslope.slopes.Endless;
 import se.liu.simjolucul.dopeslope.slopes.GameMode;
@@ -77,11 +78,11 @@ public class GameBase {
             gameMode = new CombeDeCaron(this);
         }
 
-        snowFall = new SnowFall(1, 2, width);
+        snowFall = new SnowFall(1, width);
         snowFall.initializeSnowfall(width, height);
 
         snowSpray = new SnowSpray(3.0, 11.8);
-        playerTracks = new Tracks(20, player.getRotation(), player.getSize());
+        playerTracks = new Tracks(20);
     }
 
     //-- GETTERS --//
@@ -123,12 +124,12 @@ public class GameBase {
         return RESOURCE_PACK;
     }
 
-    public List<SnowParticle> getSnowParticles() {
-        return snowFall.getSnowParticles();
+    public List<Particle> getSnowParticles() {
+        return snowFall.getParticles();
     }
 
     public List<TrackParticle> getTrackParticles() {
-        return playerTracks.getTrackParticles();
+        return playerTracks.getParticles();
     }
 
     public List<SnowSpray.SprayParticle> getSprayParticles() {
@@ -218,7 +219,7 @@ public class GameBase {
 
     private void updateParticles() {
         snowFall.update((int) player.getCurrentSpeed());
-        playerTracks.updateMovement((int) player.getYSpeed());
+        playerTracks.update((int) player.getYSpeed());
 
         double moveAngle = Math.atan2(player.getYSpeed(), player.getXSpeed());
 
