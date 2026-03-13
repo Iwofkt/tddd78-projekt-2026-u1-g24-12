@@ -10,54 +10,69 @@ import java.awt.*;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class Main{
-    private final JFrame frame;
-    private final CardLayout cardLayout;
-    private final JPanel cardPanel;
-    private final GamePanel gamePanel;
-    private final MenuPanel menuPanel;
+/**
+ * The main application class for DopeSlope.
+ * <p>
+ * This class sets up the main window, manages the transition between
+ * the menu and game panels, and loads highscore lists.
+ */
+public class Main {
+    // Non-final fields because they are set in initialize()
+    private JFrame frame = null;
+    private CardLayout cardLayout = null;
+    private JPanel cardPanel = null;
+    private GamePanel gamePanel = null;
+    private MenuPanel menuPanel = null;
 
-    private final Map<GameModeType, HighscoreList> highscoreLists = new EnumMap<>(GameModeType.class);
+    private final Map<GameModeType, HighscoreList> highscoreLists;
+    private AppState currentState = AppState.MENU;
 
+    /** The virtual width of the game window in pixels. */
     public static final int VIRTUAL_WIDTH = 800;
+
+    /** The virtual height of the game window in pixels. */
     public static final int VIRTUAL_HEIGHT = 1000;
 
     public Main() {
+        // Constructor: only minimal field initialization
+        highscoreLists = new EnumMap<>(GameModeType.class);
+    }
+
+    public void initialize() {
+        loadHighscores();
+        createAndShowGUI();
+    }
+
+    private void createAndShowGUI() {
         frame = new JFrame("DopeSlope");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(true);
 
-        loadHighscores();
-
-        // Create CardLayout and its container
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        // Create panels
+        // Create panels (they may do some initialization)
         gamePanel = new GamePanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT, highscoreLists);
         menuPanel = new MenuPanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 
-        // Add panels as cards
         cardPanel.add(menuPanel, "menu");
         cardPanel.add(gamePanel, "game");
 
-        // Set the card panel as the content pane
         frame.setContentPane(cardPanel);
-
-        // Show the menu initially
-        showMenu();
-
+        showMenu(); // sets current state and shows menu
         frame.pack();
         frame.setLocationRelativeTo(null);
     }
 
     public void showMenu() {
+        currentState = AppState.MENU;
         menuPanel.startMenu();
         cardLayout.show(cardPanel, "menu");
         gamePanel.stopGame();
     }
 
     public void startGame(GameModeType gameModeType) {
+        currentState = AppState.PLAYING;
         menuPanel.stopMenu();
         cardLayout.show(cardPanel, "game");
         gamePanel.startGame(gameModeType);
@@ -70,7 +85,6 @@ public class Main{
     private void loadHighscores() {
         highscoreLists.put(GameModeType.Endless,
                            loadSingleHighscoreList("highscores_endless.json", false));
-
         highscoreLists.put(GameModeType.CombeDeCaron,
                            loadSingleHighscoreList("highscores_combedecaron.json", true));
     }
@@ -83,18 +97,17 @@ public class Main{
             try {
                 highscoreList = HighscoreList.load(filename, lowerIsBetter);
                 loaded = true;
-
             } catch (RuntimeException ex) {
                 int result = JOptionPane.showOptionDialog(
                         null,
                         """
-			The highscore file could not be loaded.
-			It may not exist or an error occurred while reading it.
-		
-			Error message:
-			""" + ex.getMessage() + """ 
-                                Do you want to try loading the file again?
-                                """,
+                        The highscore file could not be loaded.
+                        It may not exist or an error occurred while reading it.
+
+                        Error message:
+                        """ + ex.getMessage() + """
+                        Do you want to try loading the file again?
+                        """,
                         "Highscore Error",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.ERROR_MESSAGE,
@@ -117,7 +130,10 @@ public class Main{
     }
 
     public static void main(String[] args) {
-        // Run this code on the Swing Event Dispatch Thread (EDT) as soon as possible.
-        SwingUtilities.invokeLater(() -> new Main().show());
+        SwingUtilities.invokeLater(() -> {
+            Main main = new Main();
+            main.initialize();
+            main.show();
+        });
     }
 }
