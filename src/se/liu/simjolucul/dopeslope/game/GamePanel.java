@@ -105,10 +105,10 @@ public class GamePanel extends JPanel implements ActionListener {
         int scoreValue;
 
         switch (mode) {
-            case Endless:
+            case ENDLESS:
                 scoreValue = (int) gameBase.getPlayer().getDistanceTraveled() / 100;
                 break;
-            case CombeDeCaron:
+            case COMBE_DE_CARON:
                 if (gameBase.hasFinishedRace()) {
                     scoreValue = gameBase.getElapsedMilliseconds();
                 } else {

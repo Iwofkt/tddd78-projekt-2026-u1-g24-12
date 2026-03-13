@@ -27,7 +27,7 @@ public class MenuPanel extends JPanel implements ActionListener {
         menuMenuComponent.addActionListener(e -> {
             String command = e.getActionCommand();
             if ("Start Game".equals(command)) {
-                main.startGame(GameModeType.Endless);
+                main.startGame(GameModeType.ENDLESS);
             }
             else if ("Options".equals(command)) {
                 // handle options
@@ -46,10 +46,10 @@ public class MenuPanel extends JPanel implements ActionListener {
                     menuModel.setScreen(MenuScreens.MODE_SELECT);
                     break;
                 case "MODE_ENDLESS":
-                    main.startGame(GameModeType.Endless);
+                    main.startGame(GameModeType.ENDLESS);
                     break;
                 case "MODE_COMBE":
-                    main.startGame(GameModeType.CombeDeCaron);
+                    main.startGame(GameModeType.COMBE_DE_CARON);
                     break;
                 case "BACK":
                     menuModel.setScreen(MenuScreens.MAIN);

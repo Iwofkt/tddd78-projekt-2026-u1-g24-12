@@ -76,9 +76,9 @@ public class Main {
     }
 
     private void loadHighscores() {
-        highscoreLists.put(GameModeType.Endless,
+        highscoreLists.put(GameModeType.ENDLESS,
                            loadSingleHighscoreList("highscores_endless.json", false));
-        highscoreLists.put(GameModeType.CombeDeCaron,
+        highscoreLists.put(GameModeType.COMBE_DE_CARON,
                            loadSingleHighscoreList("highscores_combedecaron.json", true));
     }
 

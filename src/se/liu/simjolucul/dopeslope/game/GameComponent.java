@@ -252,7 +252,7 @@ public class GameComponent extends JComponent implements GameObserver
 
         String scoreText;
 
-        if (gameBase.getGameModeType() == GameModeType.Endless) {
+        if (gameBase.getGameModeType() == GameModeType.ENDLESS) {
             scoreText = "Distance Traveled: " +
                     (int) gameBase.getPlayer().getDistanceTraveled() / 100;
         } else {
@@ -293,7 +293,7 @@ public class GameComponent extends JComponent implements GameObserver
 
             String valueText;
 
-            if (gameBase.getGameModeType() == GameModeType.Endless) {
+            if (gameBase.getGameModeType() == GameModeType.ENDLESS) {
                 valueText = String.valueOf(hs.getPoints());
             } else {
                 if (hs.isDNF()) {

@@ -34,7 +34,7 @@ public class GameBase {
     private final int height;
 
     // Made private to avoid package visibility
-    private GameModeType gameModeType = GameModeType.Endless;
+    private GameModeType gameModeType = GameModeType.ENDLESS;
 
     private final Player player;
     private final GameTimer gameTimer = new GameTimer();
@@ -71,9 +71,9 @@ public class GameBase {
 
         this.observers = new ArrayList<>();
 
-        if (gameModeType == GameModeType.Endless) {
+        if (gameModeType == GameModeType.ENDLESS) {
             gameMode = new Endless(this);
-        } else if (gameModeType == GameModeType.CombeDeCaron) {
+        } else if (gameModeType == GameModeType.COMBE_DE_CARON) {
             gameMode = new CombeDeCaron(this);
         }
 
@@ -313,9 +313,9 @@ public class GameBase {
 
         player.reset(spawnPoint, startRotation);
 
-        if (gameModeType == GameModeType.Endless) {
+        if (gameModeType == GameModeType.ENDLESS) {
             gameMode = new Endless(this);
-        } else if (gameModeType == GameModeType.CombeDeCaron) {
+        } else if (gameModeType == GameModeType.COMBE_DE_CARON) {
             gameMode = new CombeDeCaron(this);
         }
 
