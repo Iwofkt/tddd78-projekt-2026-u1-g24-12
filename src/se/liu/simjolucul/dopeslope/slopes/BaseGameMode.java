@@ -12,7 +12,7 @@ import java.util.Random;
  * This class manages common resources like obstacle textures, gate images, and the player,
  * but the actual gameplay logic and level design is left to be defined by subclasses.
  */
-public abstract class BaseGameMode {
+public abstract class BaseGameMode implements GameMode {
 
     // ------ Common constants ------
 
@@ -53,6 +53,7 @@ public abstract class BaseGameMode {
 	);
     }
 
+    @Override
     public void update() {
 	handleCollision();
 
