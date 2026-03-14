@@ -3,6 +3,7 @@ package se.liu.simjolucul.dopeslope.effects.track;
 import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
 import se.liu.simjolucul.dopeslope.gameobjects.Player;
 import java.awt.*;
+import java.time.temporal.ValueRange;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +25,11 @@ public class Tracks {
         this.spawnRate = spawnRate;
 
         config = new ParticleConfig();
-        config.y = 0;
-        config.recWidthMin = 6;
-        config.recWidthMax = 6;
-        config.recHeightMin = 15;
-        config.recHeightMax = 15;
-        config.lifeMax = 200;
-        config.lifeMin = 100;
-        config.alphaMax = ALPHA_MAX;
-        config.alphaMin = ALPHA_MIN;
+        config.position.setLocation(0,0);
+        config.rectWidth = ValueRange.of(6, 6);
+        config.rectHeight = ValueRange.of(15, 15);
+        config.life = ValueRange.of(100, 200);
+        config.alpha = ValueRange.of(ALPHA_MIN, ALPHA_MAX);
         config.color = Color.GRAY;
     }
 
@@ -55,15 +52,18 @@ public class Tracks {
         // Orient particles perpendicular to movement direction
         config.angle = moveAngle + Math.PI / 2;
 
+        int maxWidth = (int) config.rectWidth.getMaximum();
+        int maxHeight = (int) config.rectHeight.getMaximum();
+        int halfWidth = maxWidth / 2;
+        int halfHeight = maxHeight / 2;
+
         for (int i = 0; i < spawnRate; i++) {
             // Left ski
-            config.x = leftTip.x - config.recWidthMax / 2;
-            config.y = leftTip.y - config.recHeightMax / 2;
+            config.position.setLocation(leftTip.x - halfWidth, leftTip.y - halfHeight);
             particles.add(new TrackParticle(config));
 
             // Right ski
-            config.x = rightTip.x - config.recWidthMax / 2;
-            config.y = rightTip.y - config.recHeightMax / 2;
+            config.position.setLocation(rightTip.x - halfWidth, rightTip.y - halfHeight);
             particles.add(new TrackParticle(config));
         }
     }

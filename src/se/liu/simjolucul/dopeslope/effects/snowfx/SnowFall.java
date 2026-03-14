@@ -3,6 +3,7 @@ package se.liu.simjolucul.dopeslope.effects.snowfx;
 import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
 import java.awt.*;
+import java.time.temporal.ValueRange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,14 +33,11 @@ public class SnowFall {
         this.width = width;
 
         config = new ParticleConfig();
-        config.y = 0;
+        config.position = new Point(0, 0);
         config.spread = SPREAD;
-        config.radiusSizeMax = 8;
-        config.radiusSizeMin = 4;
-        config.lifeMax = 200;
-        config.lifeMin = 100;
-        config.alphaMax = ALPHA_MAX;
-        config.alphaMin = ALPHA_MIN;
+        config.radiusSize = ValueRange.of(4, 8);
+        config.life = ValueRange.of(100, 200);
+        config.alpha = ValueRange.of(ALPHA_MIN, ALPHA_MAX);
         config.color = Color.WHITE;
     }
 
@@ -50,8 +48,7 @@ public class SnowFall {
     public void update(int speed) {
         // Spawn new snowflakes at the top
         for (int i = 0; i < spawnRate; i++) {
-            config.x = RND.nextInt(width);
-            config.y = 0;
+            config.position.setLocation(RND.nextInt(width), 0);
             particles.add(new SnowParticle(config));
         }
         // Remove dead particles and update the rest
@@ -66,8 +63,7 @@ public class SnowFall {
         this.height = height;
 
         for (int i = 0; i < INITIAL_PARTICLES; i++) {
-            config.x = RND.nextInt(width);
-            config.y = RND.nextInt(height);
+            config.position.setLocation(RND.nextInt(width), RND.nextInt(height));
             particles.add(new SnowParticle(config));
         }
     }

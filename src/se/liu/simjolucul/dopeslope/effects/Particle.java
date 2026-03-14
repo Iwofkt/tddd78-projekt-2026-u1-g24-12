@@ -27,19 +27,23 @@ public abstract class Particle {
      * @param config configuration object containing all necessary parameters
      */
     protected Particle(ParticleConfig config) {
-        this.x = config.x;
-        this.y = config.y;
+        this.x = config.position.getX();
+        this.y = config.position.getY();
         this.rotation = config.angle;
 
-        // Random size within allowed range
-        size = config.radiusSizeMin + (int) (Math.random() * (config.radiusSizeMax - config.radiusSizeMin + 1));
+        // Random size within range
+        size = (int) config.radiusSize.getMinimum() +
+               (int) (Math.random() * ((int) config.radiusSize.getMaximum() -
+                                       (int) config.radiusSize.getMinimum() + 1));
 
-        // Random lifetime within allowed range
-        life = config.lifeMin + (int) (Math.random() * (config.lifeMax - config.lifeMin + 1));
+        // Random lifetime within range
+        life = (int) config.life.getMinimum() +
+               (int) (Math.random() * ((int) config.life.getMaximum() -
+                                       (int) config.life.getMinimum() + 1));
 
         this.color = config.color;
-        alphaMin = config.alphaMin;
-        alphaMax = config.alphaMax;
+        this.alphaMin = (int) config.alpha.getMinimum();
+        this.alphaMax = (int) config.alpha.getMaximum();
     }
 
     /**

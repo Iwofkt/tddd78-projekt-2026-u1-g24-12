@@ -14,9 +14,9 @@ public class TrackParticle extends Particle {
     private final int alpha;
     public TrackParticle(ParticleConfig config) {
         super(config);
-        this.width = config.recWidthMin;
-        this.height = config.recHeightMin;
-        this.alpha = config.alphaMin;
+        this.width = (int) config.rectWidth.getMinimum();
+        this.height = (int) config.rectHeight.getMinimum();
+        this.alpha = (int) config.alpha.getMinimum();
     }
 
     @Override

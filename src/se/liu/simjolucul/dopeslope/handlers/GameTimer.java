@@ -52,8 +52,9 @@ public class GameTimer {
     }
 
     public static String formatMillis(int millis) {
-        int minutes = millis / MILLIS_PER_SECOND * SEC_PER_MINUTE;
-        int seconds = (millis / MILLIS_PER_SECOND) % SEC_PER_MINUTE;
+        int totalSeconds = millis / MILLIS_PER_SECOND;
+        int minutes = totalSeconds / SEC_PER_MINUTE;
+        int seconds = totalSeconds % SEC_PER_MINUTE;
         int ms = millis % MILLIS_PER_SECOND;
         return String.format("%02d:%02d.%03d", minutes, seconds, ms);
     }

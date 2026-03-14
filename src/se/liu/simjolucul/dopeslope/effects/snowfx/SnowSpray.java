@@ -4,6 +4,7 @@ import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
 
 import java.awt.*;
+import java.time.temporal.ValueRange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,12 +36,9 @@ public class SnowSpray {
         this.speedThreshold = speedThreshold;
 
         baseConfig = new ParticleConfig();
-        baseConfig.radiusSizeMin = 2;
-        baseConfig.radiusSizeMax = 5;
-        baseConfig.lifeMin = 20;
-        baseConfig.lifeMax = 40;
-        baseConfig.alphaMin = 150;
-        baseConfig.alphaMax = 255;
+        baseConfig.radiusSize = ValueRange.of(2, 5);
+        baseConfig.life = ValueRange.of(20, 40);
+        baseConfig.alpha = ValueRange.of(150, 255);
         baseConfig.color = Color.WHITE;
     }
 
@@ -77,9 +75,7 @@ public class SnowSpray {
             double vy = Math.sin(angle) * speed;
 
             ParticleConfig config = new ParticleConfig(baseConfig);
-            config.x = (int) (x + offsetX);
-            config.y = (int) (y + offsetY);
-
+            config.position.setLocation((int) (x + offsetX), (int) (y + offsetY));
             particles.add(new SprayParticle(config, vx, vy));
         }
     }
@@ -98,9 +94,9 @@ public class SnowSpray {
             this.velocityX = vx;
             this.velocityY = vy;
             this.sprayColor = config.color;
-            this.alphaMin = config.alphaMin;
-            this.alphaMax = config.alphaMax;
-            this.maxLife = this.life; // capture the randomized life from super
+            this.alphaMin = (int) config.alpha.getMinimum();
+            this.alphaMax = (int) config.alpha.getMaximum();
+            this.maxLife = this.life;
         }
 
         @Override
