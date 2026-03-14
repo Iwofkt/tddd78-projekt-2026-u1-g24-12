@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Renders the main menu with scaling, snow effect, and mouse/keyboard interaction.
+ * * Renders the main menu with scaling, snow effect, and mouse/keyboard interaction.
  */
 public class MenuComponent extends JComponent {
 

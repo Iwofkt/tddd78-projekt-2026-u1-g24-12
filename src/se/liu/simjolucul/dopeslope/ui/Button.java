@@ -16,25 +16,16 @@ public class Button {
     private final Runnable onClick;
     private boolean hovered = false;
 
-    private Color normalColor = Color.GREEN;
-    private Color hoverColor = new Color(100, 200, 100);
-    private Color textColor = Color.BLACK;
+    private Color normalColor = Color.lightGray;
+    private Color hoverColor = new Color(150, 150, 150);
+    private Color textColor = Color.DARK_GRAY;
     private Font font = new Font("Arial", Font.BOLD, 24);
-    private int cornerRadius = DEFAULT_CORNER_RADIUS;
 
     public Button(int x, int y, int width, int height, String text, Runnable onClick) {
         this.bounds = new Rectangle(x, y, width, height);
         this.text = text;
         this.onClick = onClick;
     }
-
-    // -- SETTER -- //
-
-    public void setNormalColor(Color color) { this.normalColor = color; }
-    public void setHoverColor(Color color) { this.hoverColor = color; }
-    public void setTextColor(Color color) { this.textColor = color; }
-    public void setFont(Font font) { this.font = font; }
-    public void setCornerRadius(int radius) { this.cornerRadius = radius; }
 
     public void setHovered(Point p) {
         boolean now = p != null && bounds.contains(p);
@@ -56,7 +47,8 @@ public class Button {
 
         // Fill background
         g2d.setColor(hovered ? hoverColor : normalColor);
-        g2d.fillRoundRect(bounds.x, bounds.y, bounds.width, bounds.height, cornerRadius, cornerRadius);
+	final int cornerRadius = DEFAULT_CORNER_RADIUS;
+	g2d.fillRoundRect(bounds.x, bounds.y, bounds.width, bounds.height, cornerRadius, cornerRadius);
 
         // Draw border
         g2d.setColor(Color.BLACK);

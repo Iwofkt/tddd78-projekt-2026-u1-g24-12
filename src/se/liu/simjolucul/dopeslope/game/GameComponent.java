@@ -23,12 +23,12 @@ import java.util.Map;
  */
 public class GameComponent extends JComponent implements GameObserver {
 
-    // -- Layout and UI constants -- //
+    // ------ Layout and UI constants ------
     private static final int TEXT_MARGIN = 10;
     private static final int TEXT_SIZE = 20;
     private static final float MENU_TRANSPARENCY = 0.4F;
 
-    // Pause menu buttons
+    // ------ Pause menu buttons ------
     private static final int BUTTON_WIDTH = 200;
     private static final int BUTTON_HEIGHT = 50;
     private static final int BUTTON_VERTICAL_SPACING = 60;
@@ -37,7 +37,7 @@ public class GameComponent extends JComponent implements GameObserver {
     private static final int BUTTON_Y_OFFSET_NUM = 2;
     private static final int BUTTON_Y_OFFSET_DEN = 3;
 
-    // Stat display
+    // ------ Stat display ------
     /** Multiplier for TEXT_SIZE to get stat bar width. */
     private static final int STAT_BAR_WIDTH_FACTOR = 7;
     /** Inner inset for the filled portion of the stat bar. */
@@ -45,25 +45,25 @@ public class GameComponent extends JComponent implements GameObserver {
     /** Green component base for low‑speed color. */
     private static final int STAT_BAR_GREEN_COMPONENT = 100;
 
-    // Gradient overlay
+    // ------ Gradient overlay ------
     /** Offset from bottom where the gradient ends. */
     private static final int GRADIENT_BOTTOM_OFFSET = 50;
     private static final Color GRADIENT_TOP_COLOR = new Color(35, 105, 158, 20);
     private static final Color GRADIENT_BOTTOM_COLOR = new Color(0, 0, 0, 50);
 
-    // Title
+    // ------ Title ------
     /** Multiplier for TEXT_SIZE to get title font size. */
     private static final int TITLE_FONT_SIZE_MULTIPLIER = 2;
     /** Denominator for vertical title position (vh / 5). */
     private static final int TITLE_Y_FRACTION_DEN = 5;
 
-    // Game over / paused stats
+    // ------ Game over / paused stats ------
     private static final int SCORE_FONT_SIZE = 40;
     private static final int HIGHSCORE_FONT_SIZE = 20;
     /** Maximum number of highscores to display. */
     private static final int HIGHSCORE_DISPLAY_LIMIT = 10;
 
-    // Stat text positions (infoLevel values)
+    //------ Stat text positions (infoLevel values) ------
     private static final int STAT_SPEED_LABEL_LINE = 1;
     private static final int STAT_SPEED_BAR_LINE = 4;
     private static final int STAT_DISTANCE_LABEL_LINE = 6;
@@ -71,7 +71,7 @@ public class GameComponent extends JComponent implements GameObserver {
     private static final int STAT_TIME_LABEL_LINE = 11;
     private static final int STAT_TIME_VALUE_LINE = 13;
 
-    // Other numeric constants
+    //------ Other numeric constants ------
     /** Divisor to convert distance to metres (distance is stored in cm). */
     private static final int CENTIMETERS_PER_METER = 100;
     /** Factor for spacing after main score. */
