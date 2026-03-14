@@ -12,31 +12,48 @@ import java.util.List;
  * Renders the main menu with scaling, snow effect, and mouse/keyboard interaction.
  */
 public class MenuComponent extends JComponent {
-    // --- Layout and appearance constants ---
+
+    // ====== Layout and appearance constants ======
+
     private static final Color BACKGROUND_COLOR = new Color(20, 20, 30);
     private static final String FONT_NAME = "Arial";
 
-    // Title
+    // ------ Title constants ------
     private static final int TITLE_FONT_SIZE = 48;
     private static final int TITLE_Y = 150;
 
-    // Menu items
+    // ------ Menu item constants ------
     private static final int ITEM_FONT_SIZE_NORMAL = 32;
     private static final int ITEM_FONT_SIZE_SELECTED = 36;
-    private static final int ITEM_START_Y = 300;
-    private static final int ITEM_LINE_HEIGHT = 50;
 
-    private static final Color ITEM_SELECTED_COLOR = new Color(255, 215, 0); // gold
+    /** Starting Y-coordinate for the first menu item */
+    private static final int ITEM_START_Y = 300;
+
+    /** Vertical spacing between menu items */
+    private static final int ITEM_LINE_HEIGHT = 50;
+    private static final Color ITEM_SELECTED_COLOR = new Color(255, 215, 0);
     private static final Color ITEM_NORMAL_COLOR = Color.LIGHT_GRAY;
+
+
+    // ====== Instance fields ======
 
     private final MenuModel menuModel;
     private final List<Rectangle> itemBounds;
     private final List<ActionListener> actionListeners = new ArrayList<>();
 
+    // ====== Constructor ======
+
     public MenuComponent(MenuModel menuModel) {
         this.menuModel = menuModel;
         this.itemBounds = new ArrayList<>();
         setFocusable(true);
+
+        setupKeyBindings();
+        setupMouseHandling();
+    }
+
+    // ====== Key binding setup ======
+    private void setupKeyBindings() {
         InputMap im = getInputMap(JComponent.WHEN_FOCUSED);
         ActionMap am = getActionMap();
 
@@ -74,7 +91,12 @@ public class MenuComponent extends JComponent {
                 }
             }
         });
+    }
 
+    // ====== Mouse handling setup ======
+
+    /** Sets up mouse interaction for hovering and clicking menu items */
+    private void setupMouseHandling() {
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -111,9 +133,12 @@ public class MenuComponent extends JComponent {
         addMouseMotionListener(mouseHandler);
     }
 
+    // ====== Public methods ======
     public void addActionListener(ActionListener l) {
         actionListeners.add(l);
     }
+
+    // ====== Private helper methods ======
 
     private void fireActionPerformed(String command) {
         ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, command);
@@ -122,42 +147,75 @@ public class MenuComponent extends JComponent {
         }
     }
 
+    private Point convertToVirtual(Point p) {
+        int pw = getWidth();
+        int ph = getHeight();
+        int virtualWidth = menuModel.getWidth();
+        int virtualHeight = menuModel.getHeight();
+
+        double scaleX = (double) pw / virtualWidth;
+        double scaleY = (double) ph / virtualHeight;
+        double scale = Math.min(scaleX, scaleY);
+
+        int offsetX = (int) ((pw - virtualWidth * scale) / 2);
+        int offsetY = (int) ((ph - virtualHeight * scale) / 2);
+
+        // Check if point is within the scaled virtual area
+        if (p.x < offsetX || p.x > offsetX + virtualWidth * scale ||
+            p.y < offsetY || p.y > offsetY + virtualHeight * scale) {
+            return null;
+        }
+
+        int virtualX = (int) ((p.x - offsetX) / scale);
+        int virtualY = (int) ((p.y - offsetY) / scale);
+        return new Point(virtualX, virtualY);
+    }
+
+    // ====== Painting ======
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
 
-        // Scaling and centering
+        // Cache frequently used values
+        int virtualWidth = menuModel.getWidth();
+        int virtualHeight = menuModel.getHeight();
         int pw = getWidth();
         int ph = getHeight();
-        double scaleX = (double) pw / menuModel.getWidth();
-        double scaleY = (double) ph / menuModel.getHeight();
+
+        // Calculate scaling and centering
+        double scaleX = (double) pw / virtualWidth;
+        double scaleY = (double) ph / virtualHeight;
         double scale = Math.min(scaleX, scaleY);
-        int offsetX = (int) ((pw - menuModel.getWidth() * scale) / 2);
-        int offsetY = (int) ((ph - menuModel.getHeight() * scale) / 2);
+
+        int offsetX = (int) ((pw - virtualWidth * scale) / 2);
+        int offsetY = (int) ((ph - virtualHeight * scale) / 2);
+
+        // Apply transformation
         g2d.translate(offsetX, offsetY);
         g2d.scale(scale, scale);
 
-        // Background
+        // Draw background
         g2d.setColor(BACKGROUND_COLOR);
-        g2d.fillRect(0, 0, menuModel.getWidth(), menuModel.getHeight());
+        g2d.fillRect(0, 0, virtualWidth, virtualHeight);
 
-        // Snow particles
+        // Draw snow particles
         for (Particle p : menuModel.getSnow()) {
             p.draw(g2d);
         }
 
         // Draw title
         g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font(FONT_NAME, Font.BOLD, TITLE_FONT_SIZE));
+        Font titleFont = new Font(FONT_NAME, Font.BOLD, TITLE_FONT_SIZE);
+        g2d.setFont(titleFont);
+        FontMetrics titleFm = g2d.getFontMetrics(titleFont);
         String title = menuModel.getTitle();
-        FontMetrics fm = g2d.getFontMetrics();
-        int titleX = (menuModel.getWidth() - fm.stringWidth(title)) / 2;
+        int titleX = (virtualWidth - titleFm.stringWidth(title)) / 2;
         g2d.drawString(title, titleX, TITLE_Y);
 
-        // Draw menu items
-        g2d.setFont(new Font(FONT_NAME, Font.PLAIN, ITEM_FONT_SIZE_NORMAL));
-        fm = g2d.getFontMetrics();
+        Font normalFont = new Font(FONT_NAME, Font.PLAIN, ITEM_FONT_SIZE_NORMAL);
+        Font selectedFont = new Font(FONT_NAME, Font.BOLD, ITEM_FONT_SIZE_SELECTED);
+
         int y = ITEM_START_Y;
         itemBounds.clear();
 
@@ -165,58 +223,27 @@ public class MenuComponent extends JComponent {
         for (int i = 0; i < items.size(); i++) {
             MenuModel.MenuItem item = items.get(i);
             String text = item.label;
-            int x = (menuModel.getWidth() - fm.stringWidth(text)) / 2;
+
+            // Determine font and color based on selection state
+            boolean isSelected = (i == menuModel.getSelectedIndex());
+            Font currentFont = isSelected ? selectedFont : normalFont;
+            g2d.setFont(currentFont);
+            g2d.setColor(isSelected ? ITEM_SELECTED_COLOR : ITEM_NORMAL_COLOR);
+
+            FontMetrics fm = g2d.getFontMetrics(currentFont);
+
+            // Calculate position and bounds
+            int x = (virtualWidth - fm.stringWidth(text)) / 2;
             int textTopY = y - fm.getAscent();
+
             Rectangle rect = new Rectangle(x, textTopY, fm.stringWidth(text), fm.getHeight());
             itemBounds.add(rect);
 
-            boolean isSelected = (i == menuModel.getSelectedIndex());
-            if (isSelected) {
-                g2d.setColor(ITEM_SELECTED_COLOR);
-                g2d.setFont(new Font(FONT_NAME, Font.BOLD, ITEM_FONT_SIZE_SELECTED));
-            } else {
-                g2d.setColor(ITEM_NORMAL_COLOR);
-                g2d.setFont(new Font(FONT_NAME, Font.PLAIN, ITEM_FONT_SIZE_NORMAL));
-            }
-
-            fm = g2d.getFontMetrics();
-            x = (menuModel.getWidth() - fm.stringWidth(text)) / 2;
             g2d.drawString(text, x, y);
+
             y += ITEM_LINE_HEIGHT;
         }
+
         g2d.dispose();
-    }
-
-    /**
-     * Converts screen pixel coordinates to virtual menu coordinates,
-     * taking scaling and centering into account.
-     *
-     * @param screenPoint point in screen coordinates
-     * @return corresponding point in the virtual menu, or null if outside
-     */
-    private Point convertToVirtual(Point screenPoint) {
-        int pw = getWidth();
-        int ph = getHeight();
-        int vw = menuModel.getWidth();
-        int vh = menuModel.getHeight();
-
-        double scaleX = (double) pw / vw;
-        double scaleY = (double) ph / vh;
-        double scale = Math.min(scaleX, scaleY);
-        int offsetX = (int) ((pw - vw * scale) / 2);
-        int offsetY = (int) ((ph - vh * scale) / 2);
-
-        int sx = screenPoint.x;
-        int sy = screenPoint.y;
-
-        // Check if inside the scaled content area
-        if (sx < offsetX || sx >= offsetX + vw * scale ||
-            sy < offsetY || sy >= offsetY + vh * scale) {
-            return null;
-        }
-
-        int vx = (int) ((sx - offsetX) / scale);
-        int vy = (int) ((sy - offsetY) / scale);
-        return new Point(vx, vy);
     }
 }

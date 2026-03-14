@@ -12,23 +12,34 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * The main game panel that handles the game loop and rendering.
+ * <p>
+ * This panel manages the game state, updates the game logic at regular intervals,
+ * and handles highscore saving when the game ends. It contains the game world,
+ * player, obstacles, and all visual components.
+ * </p>
+ */
 public class GamePanel extends JPanel implements ActionListener {
+
+    /** The target frames per second for the game loop */
+    public static final int FPS = 40;
+
     private final Map<GameModeType, HighscoreList> highscoreLists;
 
     private final GameBase gameBase;
+
     private final GameComponent component;
+
     private final Timer timer;
 
     private boolean running = false;
+
     private boolean highscoreSaved = false;
 
-    /**
-     * the set games set FPS
-     */
-    public static final int FPS = 40;
 
     public GamePanel(Main main, int width, int height, Map<GameModeType, HighscoreList> highscoreLists) {
-	this.highscoreLists = highscoreLists;
+        this.highscoreLists = highscoreLists;
 
         setBackground(Color.BLACK);
         setLayout(new BorderLayout());
@@ -36,11 +47,12 @@ public class GamePanel extends JPanel implements ActionListener {
         gameBase = new GameBase(width, height);
 
         component = new GameComponent(gameBase, main, highscoreLists);
-	final InputHandler inputHandler = new InputHandler(component, gameBase);
+        final InputHandler inputHandler = new InputHandler(component, gameBase);
         gameBase.setInputHandler(inputHandler);
 
         add(component, BorderLayout.CENTER);
 
+        // Timer for game loop - necessary for continuous updates
         timer = new Timer(1000 / FPS, this);
     }
 
@@ -76,20 +88,35 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+    private int calculateScore(GameModeType mode) {
+        switch (mode) {
+            case ENDLESS:
+                return (int) gameBase.getPlayer().getDistanceTraveled() / 100;
+            default:
+                if (gameBase.hasFinishedRace()) {
+                    return gameBase.getElapsedMilliseconds();
+                } else {
+                    return Highscore.DNF_SCORE;
+                }
+        }
+    }
+
     private void saveHighscore() {
         boolean saved = false;
         String username = null;
 
-        while (username == null) {
+        while (username == null || username.trim().isEmpty()) {
             username = JOptionPane.showInputDialog(
                     null,
                     "Vänligen skriv in ditt användarnamn:\n",
                     "Ange Användarnamn",
                     JOptionPane.QUESTION_MESSAGE
             );
-        }
 
-        username = username.trim();
+            if (username != null) {
+                username = username.trim();
+            }
+        }
 
         GameModeType mode = gameBase.getGameModeType();
         HighscoreList highscoreList = highscoreLists.get(mode);
@@ -98,23 +125,7 @@ public class GamePanel extends JPanel implements ActionListener {
             return;
         }
 
-        int scoreValue;
-
-        switch (mode) {
-            case ENDLESS:
-                scoreValue = (int) gameBase.getPlayer().getDistanceTraveled() / 100;
-                break;
-            case COMBE_DE_CARON:
-                if (gameBase.hasFinishedRace()) {
-                    scoreValue = gameBase.getElapsedMilliseconds();
-                } else {
-                    scoreValue = Highscore.DNF_SCORE;
-                }
-                break;
-            default:
-                scoreValue = (int) gameBase.getPlayer().getDistanceTraveled() / 100;
-                break;
-        }
+        int scoreValue = calculateScore(mode);
 
         while (!saved) {
             try {
@@ -127,7 +138,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 int result = JOptionPane.showOptionDialog(
                         null,
                         "Ett fel uppstod när highscore skulle sparas:\n" + ex.getMessage() +
-                                "\nVill du försöka igen?",
+                        "\nVill du försöka igen?",
                         "Fel vid sparning",
                         JOptionPane.YES_NO_CANCEL_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
@@ -137,7 +148,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 );
 
                 if (result != JOptionPane.YES_OPTION) {
-                    saved = true;
+                    saved = true; // User chose not to retry
                 }
             }
         }
