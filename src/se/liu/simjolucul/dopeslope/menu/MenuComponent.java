@@ -86,7 +86,7 @@ public class MenuComponent extends JComponent {
             public void actionPerformed(ActionEvent e) {
                 int idx = menuModel.getSelectedIndex();
                 if (idx >= 0 && idx < menuModel.getItems().size()) {
-                    String command = menuModel.getItems().get(idx).command;
+                    String command = menuModel.getItems().get(idx).getCommand();
                     fireActionPerformed(command);
                 }
             }
@@ -124,7 +124,7 @@ public class MenuComponent extends JComponent {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (menuModel.getHoveredIndex() != -1) {
-                    String command = menuModel.getItems().get(menuModel.getHoveredIndex()).command;
+                    String command = menuModel.getItems().get(menuModel.getHoveredIndex()).getCommand();
                     fireActionPerformed(command);
                 }
             }
@@ -222,7 +222,7 @@ public class MenuComponent extends JComponent {
         List<MenuModel.MenuItem> items = menuModel.getItems();
         for (int i = 0; i < items.size(); i++) {
             MenuModel.MenuItem item = items.get(i);
-            String text = item.label;
+            String text = item.getLabel();
 
             // Determine font and color based on selection state
             boolean isSelected = (i == menuModel.getSelectedIndex());

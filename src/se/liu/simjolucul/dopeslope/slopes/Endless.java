@@ -7,8 +7,14 @@ import se.liu.simjolucul.dopeslope.handlers.collision.GateCollisionEndless;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Represents the "Endless" game mode
+ * Spawns obstacles and gates randomly as the player progresses.
+ * The player can boost their speed by passing through with gates.
+ */
 public class Endless extends BaseGameMode {
     private static final int OBSTACLE_CHANCE_MAX = 30;
+    private static final int SIDE_TREES_CHANCE = 20;
     private static final int GATE_CHANCE_MAX = 100;
     private static final int GATE_SPAWN_THRESHOLD = 0;
     private static final int GATE_MIN_X_OFFSET = 60;
@@ -33,12 +39,18 @@ public class Endless extends BaseGameMode {
         if (obstacleChance == 0) {
             int x = RND.nextInt(margin, gameBase.getWidth() - margin);
             obstacles.add(new Rock(x, gameBase.getHeight(), rockImg));
-        } else if (obstacleChance == 1) {
+        }
+        else if (obstacleChance == 1) {
             int x = RND.nextInt(margin, gameBase.getWidth() - margin);
             obstacles.add(new Tree(x, gameBase.getHeight(), treeImg));
-        } else if (obstacleChance >= 20) {
+        }
+        else if (obstacleChance >= SIDE_TREES_CHANCE) {
+
+            // Left tree
             int leftX = RND.nextInt(-treeImg.getWidth(), margin);
             obstacles.add(new Tree(leftX, gameBase.getHeight(), treeImg));
+
+            // Right tree
             int rightX = RND.nextInt(
                     gameBase.getWidth() - margin - treeImg.getWidth(),
                     gameBase.getWidth()

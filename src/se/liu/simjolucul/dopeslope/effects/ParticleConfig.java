@@ -5,7 +5,9 @@ import java.awt.Point;
 import java.time.temporal.ValueRange;
 
 /**
- * Configuration for particle generation.
+ * Configuration class for particle generation.
+ * To keep particles modifyable but not requiering to have a large amount of
+ * parameters they instead take a ParticleConfig as a single parameter
  */
 public class ParticleConfig {
 
