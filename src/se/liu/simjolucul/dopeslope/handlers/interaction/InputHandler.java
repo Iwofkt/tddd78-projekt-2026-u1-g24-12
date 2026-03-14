@@ -41,23 +41,12 @@ public class InputHandler {
         return quitPressed;
     }
 
-    public boolean isPausePressed() {
-        return pausePressed;
-    }
-
     public void setLeftPressed(boolean leftPressed) {
         keyPresses.put(Direction.LEFT, leftPressed);
     }
 
     public void setRightPressed(boolean rightPressed) {
         keyPresses.put(Direction.RIGHT, rightPressed);
-    }
-
-    public void checkActions() {
-
-        if (quitPressed) {
-            System.exit(1);
-        }
     }
 
     private class MyKeyAdapter extends KeyAdapter

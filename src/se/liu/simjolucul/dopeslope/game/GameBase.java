@@ -222,7 +222,6 @@ public class GameBase {
             if (inputHandler.isQuitPressed()) {
                 System.exit(0);
             }
-            inputHandler.checkActions();
         }
 
         gameMode.update();

@@ -19,7 +19,7 @@ public class ImageLoader {
 
     public static BufferedImage loadTexture(String texturePack, String type) {
 
-        String path = "textures" + File.separator + texturePack + File.separator + type + ".png";
+        String path = File.separator + "textures" + File.separator + texturePack + File.separator + type + ".png";
 
         try (InputStream is = ImageLoader.class.getResourceAsStream(path)) {
             if (is == null) {

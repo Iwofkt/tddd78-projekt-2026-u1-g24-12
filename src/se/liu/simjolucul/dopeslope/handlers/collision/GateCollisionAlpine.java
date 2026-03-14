@@ -14,7 +14,6 @@ public class GateCollisionAlpine implements CollisionHandler
 
 
     @Override
-
     public boolean isCollisionDetected(final Player player, final Obstacle obstacle) {
 
         return obstacle instanceof Gate gate &&
