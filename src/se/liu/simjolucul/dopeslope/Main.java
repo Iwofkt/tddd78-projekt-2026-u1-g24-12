@@ -33,7 +33,6 @@ public class Main {
     public static final int VIRTUAL_HEIGHT = 1000;
 
     public Main() {
-        // Constructor: only minimal field initialization
         highscoreLists = new EnumMap<>(GameModeType.class);
     }
 
@@ -50,7 +49,6 @@ public class Main {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        // Create panels (they may do some initialization)
         gamePanel = new GamePanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT, highscoreLists);
         menuPanel = new MenuPanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 
@@ -58,7 +56,7 @@ public class Main {
         cardPanel.add(gamePanel, "game");
 
         frame.setContentPane(cardPanel);
-        showMenu(); // sets current state and shows menu
+        showMenu();
         frame.pack();
         frame.setLocationRelativeTo(null);
     }
