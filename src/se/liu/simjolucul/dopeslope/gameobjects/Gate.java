@@ -82,16 +82,16 @@ public class Gate extends Obstacle {
 
     @Override
     public void drawObstacle(Graphics g) {
-        int leftPoleX = position.x;
-        int rightPoleX = position.x + GATE_WIDTH;
-        int poleTopY = position.y;
+        int leftPoleX = position.getLocation().x;
+        int rightPoleX = position.getLocation().x + GATE_WIDTH;
+        int poleTopY = position.getLocation().y;
         int poleWidth = width;
         int poleHeight = height;
 
         if (isDebug()) {
             g.setColor(new Color(0, 0, 128, 128)); // semi‑transparent blue
-            g.fillRect(leftHitbox.x, leftHitbox.y, leftHitbox.width, leftHitbox.height);
-            g.fillRect(rightHitbox.x, rightHitbox.y, rightHitbox.width, rightHitbox.height);
+            g.fillRect(leftHitbox.x,leftHitbox.x, leftHitbox.width, leftHitbox.height);
+            g.fillRect(rightHitbox.x, rightHitbox.x, rightHitbox.width, rightHitbox.height);
         }
 
         // Draw textures if available, otherwise fallback to colored rectangles
@@ -119,8 +119,8 @@ public class Gate extends Obstacle {
         int shadowWidth = SHADOW_SIZE;
         int shadowHeight = SHADOW_SIZE;
 
-        int shadowXLeft = position.x - (int) (shadowWidth * SHADOW_OFFSET_X_RATIO);
-        int shadowXRight = position.x + GATE_WIDTH - (int) (shadowWidth * SHADOW_OFFSET_X_RATIO);
+        int shadowXLeft = (int) (position.getX() - shadowWidth * SHADOW_OFFSET_X_RATIO);
+        int shadowXRight = (int) (position.getX() + GATE_WIDTH - shadowWidth * SHADOW_OFFSET_X_RATIO);
         int shadowY = position.y + height - (int) (shadowHeight * SHADOW_OFFSET_Y_RATIO);
 
         g2d.setColor(new Color(0, 0, 0, SHADOW_ALPHA));
@@ -137,7 +137,6 @@ public class Gate extends Obstacle {
         int poleWidth = textureLeft.getWidth();
         int hitboxY = position.y + (int) (height * HITBOX_VERTICAL_RATIO);
 
-        // Update hitbox positions (dimensions remain unchanged)
         hitbox.setLocation(position.x + poleWidth, hitboxY);
         leftHitbox.setLocation(0, hitboxY);
         rightHitbox.setLocation(position.x + GATE_WIDTH + poleWidth + HITBOX_MARGIN, hitboxY);

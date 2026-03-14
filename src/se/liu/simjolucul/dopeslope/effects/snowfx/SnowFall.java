@@ -22,6 +22,14 @@ public class SnowFall {
     private static final int ALPHA_MAX = 140;
     private static final int ALPHA_MIN = 100;
 
+    //  ------ Snowflake size defaults ------
+    private static final int SNOWFLAKE_SIZE_MIN = 4;
+    private static final int SNOWFLAKE_SIZE_MAX = 8;
+
+    // ------ Snowflake lifespan defaults ------
+    private static final int SNOWFLAKE_LIFE_MIN = 100;
+    private static final int SNOWFLAKE_LIFE_MAX = 200;
+
     private final ParticleConfig config;
     private final int spawnRate;
     private int width, height;
@@ -35,8 +43,8 @@ public class SnowFall {
         config = new ParticleConfig();
         config.position = new Point(0, 0);
         config.spread = SPREAD;
-        config.radiusSize = ValueRange.of(4, 8);
-        config.life = ValueRange.of(100, 200);
+        config.radiusSize = ValueRange.of(SNOWFLAKE_SIZE_MIN, SNOWFLAKE_SIZE_MAX);
+        config.life = ValueRange.of(SNOWFLAKE_LIFE_MIN, SNOWFLAKE_LIFE_MAX);
         config.alpha = ValueRange.of(ALPHA_MIN, ALPHA_MAX);
         config.color = Color.WHITE;
     }

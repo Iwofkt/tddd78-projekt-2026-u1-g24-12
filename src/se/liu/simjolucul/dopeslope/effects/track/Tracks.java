@@ -8,14 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates tracks behund the players
+ * Creates tracks behind the players
  * <p>
- * Track particles are genreated behind both player skis
- * with a constand alpha and solid color so overlapping tracks are'nt a visual problem
+ * Track particles are generated behind both player skis
+ * with a constant alpha and solid color so overlapping tracks aren't a visual problem
  */
 public class Tracks {
     private final static int ALPHA_MAX = 255;
     private final static int ALPHA_MIN = 255;
+
+    // ------ Track dimension constants ------
+    private static final int TRACK_WIDTH = 6;
+    private static final int TRACK_HEIGHT = 15;
+
+    // ------ Track lifespan constants ------
+    private static final int TRACK_LIFE_MIN = 100;
+    private static final int TRACK_LIFE_MAX = 200;
+
+    // ------ Track orientation constant (90 degrees = PI/2 radians) ------
+    private static final double PERPENDICULAR_ANGLE = Math.PI / 2;
 
     private final ParticleConfig config;
     private final int spawnRate;
@@ -25,10 +36,10 @@ public class Tracks {
         this.spawnRate = spawnRate;
 
         config = new ParticleConfig();
-        config.position.setLocation(0,0);
-        config.rectWidth = ValueRange.of(6, 6);
-        config.rectHeight = ValueRange.of(15, 15);
-        config.life = ValueRange.of(100, 200);
+        config.position.setLocation(0, 0);
+        config.rectWidth = ValueRange.of(TRACK_WIDTH, TRACK_WIDTH);
+        config.rectHeight = ValueRange.of(TRACK_HEIGHT, TRACK_HEIGHT);
+        config.life = ValueRange.of(TRACK_LIFE_MIN, TRACK_LIFE_MAX);
         config.alpha = ValueRange.of(ALPHA_MIN, ALPHA_MAX);
         config.color = Color.GRAY;
     }
@@ -49,8 +60,8 @@ public class Tracks {
         Point leftTip = tips[0];
         Point rightTip = tips[1];
 
-        // Orient particles perpendicular to movement direction
-        config.angle = moveAngle + Math.PI / 2;
+        //  ------ Orient particles perpendicular to movement direction ------
+        config.angle = moveAngle + PERPENDICULAR_ANGLE;
 
         int maxWidth = (int) config.rectWidth.getMaximum();
         int maxHeight = (int) config.rectHeight.getMaximum();

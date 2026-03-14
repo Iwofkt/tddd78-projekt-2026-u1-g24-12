@@ -1,13 +1,41 @@
 package se.liu.simjolucul.dopeslope.effects;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.time.temporal.ValueRange;
 
 /**
  * Configuration for particle generation.
- * Uses JDK classes to group related fields and reduce clutter.
  */
 public class ParticleConfig {
+
+    // ------ Default values ------
+    private static final int DEFAULT_POSITION_X = 0;
+    private static final int DEFAULT_POSITION_Y = 0;
+
+    private static final double DEFAULT_ANGLE = 0.0;
+    private static final double DEFAULT_SPREAD = 0.0;
+
+    // ------ Radius defaults ------
+    private static final int DEFAULT_RADIUS_MIN = 1;
+    private static final int DEFAULT_RADIUS_MAX = 10;
+
+    // ------ Rectangle dimension defaults ------
+    private static final int DEFAULT_RECT_HEIGHT_MIN = 5;
+    private static final int DEFAULT_RECT_HEIGHT_MAX = 20;
+    private static final int DEFAULT_RECT_WIDTH_MIN = 5;
+    private static final int DEFAULT_RECT_WIDTH_MAX = 20;
+
+    // ------ Life span defaults ------
+    private static final int DEFAULT_LIFE_MIN = 100;
+    private static final int DEFAULT_LIFE_MAX = 200;
+
+    // ------ Alpha transparency defaults ------
+    private static final int DEFAULT_ALPHA_MIN = 0;
+    private static final int DEFAULT_ALPHA_MAX = 255;
+
+    // ------ Default color ------
+    private static final Color DEFAULT_COLOR = Color.WHITE;
 
     /** Starting position of the particle. */
     public Point position;
@@ -19,48 +47,46 @@ public class ParticleConfig {
     public double spread;
 
     /** Range for circular particle radius (min … max). */
-    public ValueRange radiusSize;         // replaces radiusSizeMin/Max
+    public ValueRange radiusSize;
 
     /** Range for rectangular particle height (min … max). */
-    public ValueRange rectHeight;         // replaces recHeightMin/Max
+    public ValueRange rectHeight;
 
     /** Range for rectangular particle width (min … max). */
-    public ValueRange rectWidth;          // replaces recWidthMin/Max
+    public ValueRange rectWidth;
 
     /** Range for particle lifespan in frames (min … max). */
-    public ValueRange life;                // replaces lifeMin/Max
+    public ValueRange life;
 
     /** Base color of particles. */
     public Color color;
 
     /** Range for transparency (alpha) values (min … max). */
-    public ValueRange alpha;               // replaces alphaMin/Max
+    public ValueRange alpha;
 
     /** Creates a config with reasonable default values. */
     public ParticleConfig() {
-        position = new Point(0, 0);
-        angle = 0.0;
-        spread = 0.0;
-        radiusSize = ValueRange.of(1, 10);        // default radius 1–10
-        rectHeight = ValueRange.of(5, 20);        // default height 5–20
-        rectWidth = ValueRange.of(5, 20);         // default width 5–20
-        life = ValueRange.of(100, 200);           // default life 100–200
-        color = Color.WHITE;
-        alpha = ValueRange.of(0, 255);            // default alpha 0–255
+        position = new Point(DEFAULT_POSITION_X, DEFAULT_POSITION_Y);
+        angle = DEFAULT_ANGLE;
+        spread = DEFAULT_SPREAD;
+        radiusSize = ValueRange.of(DEFAULT_RADIUS_MIN, DEFAULT_RADIUS_MAX);
+        rectHeight = ValueRange.of(DEFAULT_RECT_HEIGHT_MIN, DEFAULT_RECT_HEIGHT_MAX);
+        rectWidth = ValueRange.of(DEFAULT_RECT_WIDTH_MIN, DEFAULT_RECT_WIDTH_MAX);
+        life = ValueRange.of(DEFAULT_LIFE_MIN, DEFAULT_LIFE_MAX);
+        color = DEFAULT_COLOR;
+        alpha = ValueRange.of(DEFAULT_ALPHA_MIN, DEFAULT_ALPHA_MAX);
     }
 
     /** Copy constructor. */
     public ParticleConfig(ParticleConfig other) {
-        // Point is mutable; create a new instance to preserve encapsulation
         this.position = new Point(other.position);
         this.angle = other.angle;
         this.spread = other.spread;
-        // ValueRange is immutable and thread‑safe, so we can share references
         this.radiusSize = other.radiusSize;
         this.rectHeight = other.rectHeight;
         this.rectWidth = other.rectWidth;
         this.life = other.life;
-        this.color = other.color;       // Color is immutable
+        this.color = other.color;
         this.alpha = other.alpha;
     }
 }

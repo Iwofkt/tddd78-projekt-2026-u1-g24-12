@@ -24,6 +24,18 @@ public class SnowSpray {
     private static final double SPEED_FACTOR_MIN = 0.5;
     private static final double SPEED_FACTOR_RANGE = 0.5;
 
+    // ------ Spray particle size defaults ------
+    private static final int SPRAY_SIZE_MIN = 2;
+    private static final int SPRAY_SIZE_MAX = 5;
+
+    // ------ Spray particle lifespan defaults ------
+    private static final int SPRAY_LIFE_MIN = 20;
+    private static final int SPRAY_LIFE_MAX = 40;
+
+    // ------ Spray particle alpha transparency defaults ------
+    private static final int SPRAY_ALPHA_MIN = 150;
+    private static final int SPRAY_ALPHA_MAX = 255;
+
     private final List<SprayParticle> particles = new ArrayList<>();
     /** particles per spawn call */
     private final double spawnRate;
@@ -36,9 +48,9 @@ public class SnowSpray {
         this.speedThreshold = speedThreshold;
 
         baseConfig = new ParticleConfig();
-        baseConfig.radiusSize = ValueRange.of(2, 5);
-        baseConfig.life = ValueRange.of(20, 40);
-        baseConfig.alpha = ValueRange.of(150, 255);
+        baseConfig.radiusSize = ValueRange.of(SPRAY_SIZE_MIN, SPRAY_SIZE_MAX);
+        baseConfig.life = ValueRange.of(SPRAY_LIFE_MIN, SPRAY_LIFE_MAX);
+        baseConfig.alpha = ValueRange.of(SPRAY_ALPHA_MIN, SPRAY_ALPHA_MAX);
         baseConfig.color = Color.WHITE;
     }
 
@@ -61,8 +73,9 @@ public class SnowSpray {
         if (RND.nextDouble() < remainder) count++;
 
         for (int i = 0; i < count; i++) {
-            double offsetX = RND.nextGaussian() * OFFSET_STANDARD_DEV;
-            double offsetY = RND.nextGaussian() * OFFSET_STANDARD_DEV;
+            double gaussianOffset = RND.nextGaussian() * OFFSET_STANDARD_DEV;
+            double offsetX = gaussianOffset;
+            double offsetY = gaussianOffset;
 
             double baseAngle = directionAngle + Math.PI; // opposite direction
 

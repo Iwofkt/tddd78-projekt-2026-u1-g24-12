@@ -19,63 +19,76 @@ public class Player {
 
     // ====== Constants ======
 
-    // ------ Base size ------
-    private static final int SIZE = 20;
+    /** Base size of the player hitbox and for scaling proportions */
+    public static class Size {
+        public static final int BASE = 20;
+    }
 
-    // ------ Movement physics ------
-    private static final double PLAYER_ROTATE_SPEED = 0.08;
-    private static final double MIN_SPEED = 1.0;
-    private static final double MAX_SPEED = 12.0;
-    private static final double ACCELERATION = 0.06;
-    private static final double SPEED_BOOST = 18.0;
+    /** Movement physics constants */
+    public static class Movement {
+        public static final double ROTATE_SPEED = 0.08;
+        public static final double MIN_SPEED = 1.0;
+        public static final double MAX_SPEED = 12.0;
+        public static final double ACCELERATION = 0.06;
+        public static final double BOOST_SPEED = 18.0;
+        public static final double SMOOTHING_FACTOR = 0.1;
+    }
 
-    // ------ Rotation limits (0.1PI to 0.9PI) ------
-    private static final double MIN_ROTATION = 0.1 * Math.PI;
-    private static final double MAX_ROTATION = 0.9 * Math.PI;
+    /** Rotation limits (0.1PI to 0.9PI) */
+    public static class RotationLimits {
+        public static final double MIN = 0.1 * Math.PI;
+        public static final double MAX = 0.9 * Math.PI;
+    }
 
-    // ------ Shake effect ------
-    private static final double SHAKE_SPEED_THRESHOLD = 10.0;
-    private static final double SHAKE_INTENSITY_FACTOR = 0.1;
-    private static final double ROTATION_WOBBLE_FACTOR = 0.005;
-    private static final double SHAKE_TIME_INCREMENT = 0.2;
-    private static final double SHAKE_X_FREQUENCY = 8.0;
-    private static final double SHAKE_Y_FREQUENCY = 6.0;
+    /** Shake effect constants for high-speed visuals */
+    public static class Shake {
+        public static final double SPEED_THRESHOLD = 10.0;
+        public static final double INTENSITY_FACTOR = 0.1;
+        public static final double WOBBLE_FACTOR = 0.005;
+        public static final double TIME_INCREMENT = 0.2;
+        public static final double X_FREQUENCY = 8.0;
+        public static final double Y_FREQUENCY = 6.0;
+    }
 
-    private static final double SMOOTHING_FACTOR = 0.1;
+    /** Ski geometry constants (relative to Size.BASE) */
+    public static class SkiGeometry {
+        public static final double LENGTH_FACTOR = 3.0;
+        public static final double WIDTH_FACTOR = 0.166666666;
+        /** extra gap between skis */
+        public static final double GAP_EXTRA = 7.0;
+        /** used for tip position */
+        public static final double TIP_Y_OFFSET_FACTOR = 1.8;
+        /** fine‑tune right ski tip */
+        public static final int RIGHT_TIP_X_OFFSET = -2;
+    }
 
-    // ------ Ski geometry constants (relative to SIZE) ------
-    private static final double SKI_LENGTH_FACTOR = 3.0;
-    private static final double SKI_WIDTH_FACTOR = 0.166666666;
-    /** extra gap between skis */
-    private static final double SKI_GAP_EXTRA = 7.0;
-    /** used for tip position */
-    private static final double SKI_TIP_Y_OFFSET_FACTOR = 1.8;
-    /** fine‑tune right ski tip */
-    private static final int RIGHT_SKI_TIP_X_OFFSET = -2;
+    /** Skier body proportions (relative to Size.BASE) */
+    public static class BodyProportions {
+        public static final double TORSO_WIDTH_FACTOR = 1.5;
+        public static final double TORSO_HEIGHT_FACTOR = 1.2;
+        public static final double HEAD_SIZE_FACTOR = 0.9;
+        public static final int HEAD_OFFSET_DIVISOR = 4;
+        public static final double GOGGLE_WIDTH_FACTOR = 0.6;
+        public static final int GOGGLE_HEIGHT_DIVISOR = 6;
+    }
 
-    // ------ Skier body proportions (relative to SIZE) ------
-    private static final double TORSO_WIDTH_FACTOR = 1.5;
-    private static final double TORSO_HEIGHT_FACTOR = 1.2;
-    private static final double HEAD_SIZE_FACTOR = 0.9;
-    private static final int HEAD_OFFSET_DIVISOR = 4;
-    private static final double GOGGLE_WIDTH_FACTOR = 0.6;
-    private static final int GOGGLE_HEIGHT_DIVISOR = 6;
+    /** Color constants for fallback drawing */
+    public static class Colors {
+        public static final Color SKI = new Color(25, 25, 25);
+        public static final Color TORSO = new Color(210, 50, 50);
+        public static final Color HEAD = new Color(40, 40, 40);
+        public static final Color GOGGLE = new Color(5, 88, 165);
+    }
 
-    // ------ Colors ------
-    private static final Color SKI_COLOR = new Color(25, 25, 25);
-    private static final Color TORSO_COLOR = new Color(210, 50, 50);
-    private static final Color HEAD_COLOR = new Color(40, 40, 40);
-    private static final Color GOGGLE_COLOR = new Color(5, 88, 165);
-
-    // ------ Vertical position scaling ------
-    private static final double VERTICAL_POSITION_SCALE = 10.0;
+    /** Vertical position scaling factor */
+    public static final double VERTICAL_POSITION_SCALE = 10.0;
 
     // ====== Instance fields ======
     private final Rectangle hitbox;
     private double rotation;
     private double currentSpeed;
-    private double xSpeed = 0;
-    private double ySpeed = 0;
+    /** Combined velocity vector (x = horizontal, y = vertical) */
+    private final Point2D.Double velocity = new Point2D.Double(0, 0);
     private final Point position = new Point(0, 0);
     private final Point spawn = new Point(0, 0);
     private double distanceTraveled = 0;
@@ -87,38 +100,37 @@ public class Player {
         this.spawn.setLocation(spawnPosition);
         this.position.setLocation(spawnPosition);
         this.rotation = startRotation;
-        this.currentSpeed = MIN_SPEED;
-        this.hitbox = new Rectangle(spawnPosition.x, spawnPosition.y, SIZE, SIZE);
+        this.currentSpeed = Movement.MIN_SPEED;
+        this.hitbox = new Rectangle(spawnPosition.x, spawnPosition.y, Size.BASE, Size.BASE);
         this.texture = texture;
     }
 
     // ====== Public methods ======
 
     public void rotate(Direction direction) {
-        if (direction == Direction.LEFT && rotation < MAX_ROTATION) {
-            rotation += PLAYER_ROTATE_SPEED;
-        } else if (direction == Direction.RIGHT && rotation > MIN_ROTATION) {
-            rotation -= PLAYER_ROTATE_SPEED;
+        if (direction == Direction.LEFT && rotation < RotationLimits.MAX) {
+            rotation += Movement.ROTATE_SPEED;
+        } else if (direction == Direction.RIGHT && rotation > RotationLimits.MIN) {
+            rotation -= Movement.ROTATE_SPEED;
         }
     }
 
     public void moveHorizontally(int worldWidth, int margin) {
-        int nextX = position.x + (int) xSpeed;
+        int nextX = position.x + (int) velocity.x;
         if (nextX > margin && nextX < worldWidth - margin) {
             position.x = nextX;
         }
     }
 
     public void boostSpeed() {
-        currentSpeed = SPEED_BOOST;
+        currentSpeed = Movement.BOOST_SPEED;
     }
 
     public void reset(Point spawnPoint, double startRotation) {
         position.setLocation(spawnPoint);
         rotation = startRotation;
-        currentSpeed = MIN_SPEED;
-        xSpeed = 0;
-        ySpeed = 0;
+        currentSpeed = Movement.MIN_SPEED;
+        velocity.setLocation(0, 0);
         distanceTraveled = 0;
         shakeTime = 0;
         hitbox.setLocation(spawnPoint.x, spawnPoint.y);
@@ -129,49 +141,50 @@ public class Player {
      * Used for collision detection with gates.
      */
     public Point[] getSkiTipPositions() {
-        double skiLength = SIZE * SKI_LENGTH_FACTOR;
-        double skiWidth = SIZE * SKI_WIDTH_FACTOR;
-        double skiGap = skiWidth + SKI_GAP_EXTRA;
+        double skiLength = Size.BASE * SkiGeometry.LENGTH_FACTOR;
+        double skiWidth = Size.BASE * SkiGeometry.WIDTH_FACTOR;
+        double skiGap = skiWidth + SkiGeometry.GAP_EXTRA;
         // tip Y in local coordinates (relative to ski origin)
-        double bottomY = -skiLength / SKI_TIP_Y_OFFSET_FACTOR + skiLength;
+        double bottomY = -skiLength / SkiGeometry.TIP_Y_OFFSET_FACTOR + skiLength;
 
-        double centerX = position.x + SIZE / 2.0;
-        double centerY = position.y + SIZE / 2.0;
+        double centerX = position.x + Size.BASE / 2.0;
+        double centerY = position.y + Size.BASE / 2.0;
         double angle = rotation + Math.PI / 2; // because the skier image is rotated
 
-        // Left ski tip
-        double localXLeft = -skiGap;
-        double worldXLeft = centerX + localXLeft * Math.cos(angle) - bottomY * Math.sin(angle);
-        double worldYLeft = centerY + localXLeft * Math.sin(angle) + bottomY * Math.cos(angle);
+        double[] localX = {-skiGap, skiGap - skiWidth};
+        double[] worldX = new double[2];
+        double[] worldY = new double[2];
 
-        // Right ski tip
-        double localXRight = skiGap - skiWidth;
-        double worldXRight = centerX + localXRight * Math.cos(angle) - bottomY * Math.sin(angle);
-        double worldYRight = centerY + localXRight * Math.sin(angle) + bottomY * Math.cos(angle);
+        for (int i = 0; i < 2; i++) {
+            worldX[i] = centerX + localX[i] * Math.cos(angle) - bottomY * Math.sin(angle);
+            worldY[i] = centerY + localX[i] * Math.sin(angle) + bottomY * Math.cos(angle);
+        }
 
+        // Apply right ski tip offset
         return new Point[]{
-                new Point((int) worldXLeft, (int) worldYLeft),
-                new Point((int) worldXRight + RIGHT_SKI_TIP_X_OFFSET, (int) worldYRight)
+                new Point((int) worldX[0], (int) worldY[0]),
+                new Point((int) worldX[1] + SkiGeometry.RIGHT_TIP_X_OFFSET, (int) worldY[1])
         };
     }
 
     public void update() {
-        position.y = spawn.y + (int) (ySpeed * VERTICAL_POSITION_SCALE);
-        shakeTime += SHAKE_TIME_INCREMENT;
+        position.y = spawn.y + (int) (velocity.y * VERTICAL_POSITION_SCALE);
+        shakeTime += Shake.TIME_INCREMENT;
 
         // Accumulate distance traveled (based on vertical speed)
-        distanceTraveled += Math.abs(ySpeed);
+        distanceTraveled += Math.abs(velocity.y);
 
         hitbox.setLocation(position.x, position.y);
 
-        // min + difference * amount of downwards (if straight down speed is max)
-        double targetSpeed = MIN_SPEED + (MAX_SPEED - MIN_SPEED) * Math.sin(rotation);
+        // Calculate target speed based on rotation (more downward = faster)
+        double targetSpeed = Movement.MIN_SPEED +
+                             (Movement.MAX_SPEED - Movement.MIN_SPEED) * Math.sin(rotation);
 
         // Accelerate or decelerate towards target speed
         if (currentSpeed < targetSpeed) {
-            currentSpeed += ACCELERATION;
+            currentSpeed += Movement.ACCELERATION;
         } else if (currentSpeed > targetSpeed) {
-            currentSpeed -= ACCELERATION;
+            currentSpeed -= Movement.ACCELERATION;
         }
 
         // Desired velocity components based on current speed and rotation
@@ -179,31 +192,31 @@ public class Player {
         double targetY = currentSpeed * Math.sin(rotation);
 
         // Smoothly adjust actual velocities
-        xSpeed += (targetX - xSpeed) * SMOOTHING_FACTOR;
-        ySpeed += (targetY - ySpeed) * SMOOTHING_FACTOR;
+        velocity.x += (targetX - velocity.x) * Movement.SMOOTHING_FACTOR;
+        velocity.y += (targetY - velocity.y) * Movement.SMOOTHING_FACTOR;
     }
 
     public void draw(Graphics2D g2d) {
-        int centerX = position.x + SIZE / 2;
-        int centerY = position.y + SIZE / 2;
+        int centerX = position.x + Size.BASE / 2;
+        int centerY = position.y + Size.BASE / 2;
 
         // Shake effect at high speed
-        double shakeX = 0, shakeY = 0;
-        if (currentSpeed > SHAKE_SPEED_THRESHOLD) {
-            double intensity = (currentSpeed - SHAKE_SPEED_THRESHOLD) * SHAKE_INTENSITY_FACTOR;
-            shakeX = Math.sin(shakeTime * SHAKE_X_FREQUENCY) * intensity;
-            shakeY = Math.cos(shakeTime * SHAKE_Y_FREQUENCY) * intensity;
+        Point2D.Double shake = new Point2D.Double(0, 0);
+        if (currentSpeed > Shake.SPEED_THRESHOLD) {
+            double intensity = (currentSpeed - Shake.SPEED_THRESHOLD) * Shake.INTENSITY_FACTOR;
+            shake.x = Math.sin(shakeTime * Shake.X_FREQUENCY) * intensity;
+            shake.y = Math.cos(shakeTime * Shake.Y_FREQUENCY) * intensity;
         }
 
         // Slight rotation wobble at high speed
         double drawRotation = rotation;
-        drawRotation += Math.sin(shakeTime) * ROTATION_WOBBLE_FACTOR * currentSpeed;
+        drawRotation += Math.sin(shakeTime) * Shake.WOBBLE_FACTOR * currentSpeed;
 
         // Save original transform
         AffineTransform old = g2d.getTransform();
 
         // Move to player center, apply shake, then rotate
-        g2d.translate(centerX + shakeX, centerY + shakeY);
+        g2d.translate(centerX + shake.x, centerY + shake.y);
         g2d.rotate(drawRotation + Math.PI / 2);
 
         if (texture != null) {
@@ -213,7 +226,7 @@ public class Player {
             drawFallbackSkier(g2d);
         }
 
-        // Restore original transform (safe because we saved it)
+        // Restore original transform
         g2d.setTransform(old);
 
         // Debug: draw hitbox
@@ -224,38 +237,38 @@ public class Player {
     }
 
     private void drawFallbackSkier(Graphics2D g2d) {
-        int skiLength = (int) (SIZE * SKI_LENGTH_FACTOR);
-        int skiWidth = (int) (SIZE * SKI_WIDTH_FACTOR);
-        int skiGap = (int) (skiWidth + SKI_GAP_EXTRA);
+        int skiLength = (int) (Size.BASE * SkiGeometry.LENGTH_FACTOR);
+        int skiWidth = (int) (Size.BASE * SkiGeometry.WIDTH_FACTOR);
+        int skiGap = (int) (skiWidth + SkiGeometry.GAP_EXTRA);
 
-        int torsoWidth = (int) (SIZE * TORSO_WIDTH_FACTOR);
-        int torsoHeight = (int) (SIZE * TORSO_HEIGHT_FACTOR);
-        int headSize = (int) (SIZE * HEAD_SIZE_FACTOR);
-        int headOffsetY = torsoHeight / HEAD_OFFSET_DIVISOR;
-        int goggleWidth = (int) (headSize * GOGGLE_WIDTH_FACTOR);
-        int goggleHeight = headSize / GOGGLE_HEIGHT_DIVISOR;
+        int torsoWidth = (int) (Size.BASE * BodyProportions.TORSO_WIDTH_FACTOR);
+        int torsoHeight = (int) (Size.BASE * BodyProportions.TORSO_HEIGHT_FACTOR);
+        int headSize = (int) (Size.BASE * BodyProportions.HEAD_SIZE_FACTOR);
+        int headOffsetY = torsoHeight / BodyProportions.HEAD_OFFSET_DIVISOR;
+        int goggleWidth = (int) (headSize * BodyProportions.GOGGLE_WIDTH_FACTOR);
+        int goggleHeight = headSize / BodyProportions.GOGGLE_HEIGHT_DIVISOR;
 
         // Skis
-        g2d.setColor(SKI_COLOR);
-        // Left ski
-        g2d.fillRoundRect(-skiGap,
-                          (int) (-skiLength / SKI_TIP_Y_OFFSET_FACTOR),
-                          skiWidth, skiLength, skiWidth, skiWidth);
-        // Right ski
-        g2d.fillRoundRect(skiGap - skiWidth,
-                          (int) (-skiLength / SKI_TIP_Y_OFFSET_FACTOR),
-                          skiWidth, skiLength, skiWidth, skiWidth);
+        g2d.setColor(Colors.SKI);
+
+        // Combine ski positions into an array
+        int[] skiXPositions = {-skiGap, skiGap - skiWidth};
+        int skiYPosition = (int) (-skiLength / SkiGeometry.TIP_Y_OFFSET_FACTOR);
+
+        for (int skiX : skiXPositions) {
+            g2d.fillRoundRect(skiX, skiYPosition, skiWidth, skiLength, skiWidth, skiWidth);
+        }
 
         // Torso
-        g2d.setColor(TORSO_COLOR);
+        g2d.setColor(Colors.TORSO);
         g2d.fillOval(-torsoWidth / 2, -torsoHeight / 2, torsoWidth, torsoHeight);
 
         // Head
-        g2d.setColor(HEAD_COLOR);
+        g2d.setColor(Colors.HEAD);
         g2d.fillOval(-headSize / 2, -headSize / 2 - headOffsetY, headSize, headSize);
 
         // Goggles
-        g2d.setColor(GOGGLE_COLOR);
+        g2d.setColor(Colors.GOGGLE);
         g2d.fillRoundRect(-goggleWidth / 2,
                           -headSize / 2 - headOffsetY,
                           goggleWidth, goggleHeight,
@@ -268,7 +281,7 @@ public class Player {
      * Returns the current velocity as a Point2D.Double (x = horizontal, y = vertical).
      */
     public Point2D.Double getSpeed() {
-        return new Point2D.Double(xSpeed, ySpeed);
+        return new Point2D.Double(velocity.x, velocity.y);
     }
 
     public Rectangle getHitbox() {
@@ -276,7 +289,7 @@ public class Player {
     }
 
     public double getMaxSpeed() {
-        return MAX_SPEED;
+        return Movement.MAX_SPEED;
     }
 
     public double getDistanceTraveled() {
