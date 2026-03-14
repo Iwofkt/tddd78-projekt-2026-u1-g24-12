@@ -1,23 +1,27 @@
 package se.liu.simjolucul.dopeslope.handlers.interaction;
 
+import se.liu.simjolucul.dopeslope.game.Direction;
 import se.liu.simjolucul.dopeslope.game.GameBase;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.EnumMap;
 
+/**
+ * Handles user input for controlling the game.
+ * This class listens for key presses and releases, tracking the state
+ * of specific keys such as left, right, and quit.
+ */
 public class InputHandler {
 
-    private boolean leftPressed = false;
-    private boolean rightPressed = false;
+    private EnumMap<Direction, Boolean> keyPresses = new EnumMap<>(Direction.class);
+
     private boolean quitPressed = false;
 
-    private final GameBase gameBase;
-
     public InputHandler(JComponent pane, GameBase gameBase) {
-        this.gameBase = gameBase;
 
-        // Make sure pane can receive key events
+	// Make sure pane can receive key events
         pane.setFocusable(true);
         pane.requestFocusInWindow();
 
@@ -27,8 +31,8 @@ public class InputHandler {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A, KeyEvent.VK_LEFT -> leftPressed = true;
-                    case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> rightPressed = true;
+                    case KeyEvent.VK_A, KeyEvent.VK_LEFT -> keyPresses.put(Direction.LEFT, true);
+                    case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> keyPresses.put(Direction.RIGHT, true);
                     case KeyEvent.VK_Q -> {
                         if (e.isControlDown()) quitPressed = true;
                     }
@@ -38,20 +42,15 @@ public class InputHandler {
             @Override
             public void keyReleased(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A, KeyEvent.VK_LEFT -> leftPressed = false;
-                    case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> rightPressed = false;
+                    case KeyEvent.VK_A, KeyEvent.VK_LEFT -> keyPresses.put(Direction.LEFT, false);
+                    case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> keyPresses.put(Direction.RIGHT, false);
                 }
             }
         });
     }
 
-    //-- Getters to check key states in game loop --//
-    public boolean isLeftPressed() {
-        return leftPressed;
-    }
-
-    public boolean isRightPressed() {
-        return rightPressed;
+    public boolean isKeyPressed(Direction direction) {
+        return keyPresses.getOrDefault(direction, false);
     }
 
     public boolean isQuitPressed() {
@@ -59,16 +58,14 @@ public class InputHandler {
     }
 
     public void resetQuit() {
-        quitPressed = false; // call this after handling quit
+        quitPressed = false;
     }
 
-    //-- Setters --//
-
     public void setLeftPressed(boolean leftPressed) {
-        this.leftPressed = leftPressed;
+        keyPresses.put(Direction.LEFT, leftPressed);
     }
 
     public void setRightPressed(boolean rightPressed) {
-        this.rightPressed = rightPressed;
+        keyPresses.put(Direction.RIGHT, rightPressed);
     }
 }

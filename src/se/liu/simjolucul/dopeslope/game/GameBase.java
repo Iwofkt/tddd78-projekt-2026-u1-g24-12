@@ -204,7 +204,7 @@ public class GameBase {
         notifyObservers();
     }
 
-    // ===== Game Update =====
+    // ====== Game Update ======
 
     public void update() {
         if (isGameOver() || isGamePaused()) return;
@@ -213,10 +213,10 @@ public class GameBase {
         player.moveHorizontally(width, MARGIN);
 
         if (inputHandler != null) {
-            if (inputHandler.isLeftPressed()) {
+            if (inputHandler.isKeyPressed(Direction.LEFT)) {
                 player.rotate(Direction.LEFT);
             }
-            if (inputHandler.isRightPressed()) {
+            if (inputHandler.isKeyPressed(Direction.RIGHT)) {
                 player.rotate(Direction.RIGHT);
             }
             if (inputHandler.isQuitPressed()) {
@@ -257,7 +257,7 @@ public class GameBase {
 
     private void handleCollision() {
         for (Obstacle obstacle : obstacles) {
-            if (objectCollision.checkCollision(player, obstacle)) {
+            if (objectCollision.isCollisionDetected(player, obstacle)) {
                 setGameOver(true);
             }
         }

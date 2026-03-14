@@ -84,12 +84,12 @@ public class CombeDeCaron extends BaseGameMode {
     @Override
     protected void handleCollision() {
         for (Gate gate : gates) {
-            if (gateCollisionAlpine.checkCollision(player, gate)) {
+            if (gateCollisionAlpine.isCollisionDetected(player, gate)) {
                 gameBase.setGameOver(true);
             }
         }
         for (FinishLine line : finishline) {
-            if (gateCollisionEndless.checkCollision(player, line)) {
+            if (gateCollisionEndless.isCollisionDetected(player, line)) {
                 gameBase.setFinishedRace(true);
                 gameBase.setGameOver(true);
             }

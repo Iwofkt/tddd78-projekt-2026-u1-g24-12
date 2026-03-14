@@ -96,7 +96,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 if (gameBase.hasFinishedRace()) {
                     return gameBase.getElapsedMilliseconds();
                 } else {
-                    return Highscore.DNF_SCORE;
+                    return Highscore.getDnfScore();
                 }
         }
     }

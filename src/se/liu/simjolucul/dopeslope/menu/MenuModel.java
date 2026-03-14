@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MenuModel
-{
+/**
+ * Represents the model for the menu system, handling menu screens, items, and snow effects.
+ */
+public class MenuModel {
+
     private static final int SNOW_SPEED = 10;
     private final int width;
     private final int height;
@@ -27,6 +30,11 @@ public class MenuModel
         snowFall.initializeSnowfall(width, height);
     }
 
+    /**
+     * Changes the current screen to the specified menu screen.
+     *
+     * @param screens The menu screen to switch to (MAIN, MODE_SELECT, etc.)
+     */
     public void setScreen(MenuScreen screens) {
         switch (screens) {
             case MAIN:
@@ -48,10 +56,18 @@ public class MenuModel
         notifyChange();
     }
 
+    /**
+     * Updates the menu, including updating the snow effect.
+     */
     public void update() {
         snowFall.update(SNOW_SPEED);
     }
 
+    /**
+     * Gets the list of snow particles for rendering.
+     *
+     * @return The list of snow particles.
+     */
     public List<Particle> getSnow() {
         return snowFall.getParticles();
     }
@@ -61,17 +77,13 @@ public class MenuModel
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
-
     /**
-     * Inner class for menu items
+     * Adds a listener for menu changes.
+     *
+     * @param listener A Runnable to be executed when the menu changes.
      */
-    public static class MenuItem {
-        public final String label;
-        public final String command;
-        public MenuItem(String label, String command) {
-            this.label = label;
-            this.command = command;
-        }
+    public void addChangeListener(Runnable listener) {
+        changeListeners.add(listener);
     }
 
     private void notifyChange() {
@@ -79,22 +91,47 @@ public class MenuModel
             r.run();
         }
     }
+
     public int getSelectedIndex() { return selectedIndex; }
     public void setSelectedIndex(int index) { this.selectedIndex = index; }
     public int getHoveredIndex() { return hoveredIndex; }
     public void setHoveredIndex(int index) { this.hoveredIndex = index; }
 
-
+    /**
+     * Selects the next menu item, wrapping around if necessary.
+     */
     public void selectNext() {
         if (items != null && !items.isEmpty()) {
             selectedIndex = (selectedIndex + 1) % items.size();
         }
     }
+
+    /**
+     * Selects the previous menu item, wrapping around if necessary.
+     */
     public void selectPrevious() {
         if (items != null && !items.isEmpty()) {
             selectedIndex = (selectedIndex - 1 + items.size()) % items.size();
         }
     }
 
+    /**
+     * Inner class for menu items.
+     */
+    public static class MenuItem {
+        /**
+         * The label text displayed on the menu item.
+         */
+        public final String label;
 
+        /**
+         * The command associated with the menu item.
+         */
+        public final String command;
+
+        public MenuItem(String label, String command) {
+            this.label = label;
+            this.command = command;
+        }
+    }
 }

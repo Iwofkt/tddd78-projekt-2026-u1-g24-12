@@ -1,14 +1,14 @@
 package se.liu.simjolucul.dopeslope.highscore;
 
+/**
+ * Represents a highscore with a player's name and points.
+ */
 public class Highscore {
 
-    public static final int DNF_SCORE = Integer.MAX_VALUE;
+    private static final int DNF_SCORE = Integer.MAX_VALUE;
 
     private String name = null;
     private int points;
-
-    public Highscore() {
-    }
 
     public Highscore(String name, int points) {
         this.name = name;
@@ -25,6 +25,10 @@ public class Highscore {
 
     public boolean isDNF() {
         return points == DNF_SCORE;
+    }
+
+    public static int getDnfScore() {
+        return DNF_SCORE;
     }
 }
 

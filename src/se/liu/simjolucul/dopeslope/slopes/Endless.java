@@ -63,7 +63,7 @@ public class Endless extends BaseGameMode {
     @Override
     protected void handleCollision() {
         for (Gate gate : gates) {
-            if (gateCollisionEndless.checkCollision(player, gate)) {
+            if (gateCollisionEndless.isCollisionDetected(player, gate)) {
                 player.boostSpeed();
             }
         }

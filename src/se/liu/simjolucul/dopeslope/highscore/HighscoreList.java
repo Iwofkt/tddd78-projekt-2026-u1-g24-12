@@ -10,109 +10,115 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Handles the list of highscores, allowing adding new scores, sorting them,
+ * saving them to a file, and loading them from a file.
+ */
 public class HighscoreList {
 
-	private List<Highscore> highscores;
-	private final String filename;
-	private final boolean lowerIsBetter;
+    private static final int MAX_HIGH_SCORE_LIST_SIZE = 10;
 
-	public HighscoreList(String filename, boolean lowerIsBetter) {
-		this.filename = filename;
-		this.lowerIsBetter = lowerIsBetter;
-		this.highscores = new ArrayList<>();
+    private List<Highscore> highscores;
+    private final String filename;
+    private final boolean lowerIsBetter;
+
+    public HighscoreList(String filename, boolean lowerIsBetter) {
+	this.filename = filename;
+	this.lowerIsBetter = lowerIsBetter;
+	this.highscores = new ArrayList<>();
+    }
+
+
+    public void addScore(Highscore score) throws IOException {
+	highscores.add(score);
+
+	if (lowerIsBetter) {
+	    highscores.sort(Comparator.comparingInt(Highscore::getPoints));
+	} else {
+	    highscores.sort((o1, o2) -> Integer.compare(o2.getPoints(), o1.getPoints()));
 	}
 
-	public void addScore(Highscore score) throws IOException {
-		highscores.add(score);
-
-		if (lowerIsBetter) {
-			highscores.sort(Comparator.comparingInt(Highscore::getPoints));
-		} else {
-			highscores.sort((o1, o2) -> Integer.compare(o2.getPoints(), o1.getPoints()));
-		}
-
-		if (highscores.size() > 10) {
-			highscores = new ArrayList<>(highscores.subList(0, 10));
-		}
-
-		save();
+	if (highscores.size() > MAX_HIGH_SCORE_LIST_SIZE) {
+	    highscores = new ArrayList<>(highscores.subList(0, MAX_HIGH_SCORE_LIST_SIZE));
 	}
 
-	public List<Highscore> getHighscores() {
-		return highscores;
+	save();
+    }
+
+    public List<Highscore> getHighscores() {
+	return highscores;
+    }
+
+    public void save() throws IOException {
+	saveToFile(getFullPath(filename));
+    }
+
+    public void saveToFile(String fullPath) throws IOException {
+	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+	File originalFile = new File(fullPath);
+	File tempFile = new File(fullPath + ".tmp");
+
+	File parentDir = originalFile.getParentFile();
+	if (parentDir != null && !parentDir.exists()) {
+	    if (!parentDir.mkdirs()) {
+		throw new IOException("Could not create directory: " + parentDir);
+	    }
 	}
 
-	public int getLength() {
-		return highscores.size();
+	try (FileWriter writer = new FileWriter(tempFile)) {
+	    gson.toJson(this, writer);
 	}
 
-	public void save() throws IOException {
-		saveToFile(getFullPath(filename));
+	Files.move(tempFile.toPath(),
+		   originalFile.toPath(),
+		   StandardCopyOption.REPLACE_EXISTING,
+		   StandardCopyOption.ATOMIC_MOVE);
+    }
+
+    public static HighscoreList load(String filename, boolean lowerIsBetter) {
+	try {
+	    return loadFromFile(getFullPath(filename), filename, lowerIsBetter);
+	} catch (FileNotFoundException e) {
+	    // Log the exception and handle it gracefully
+	    System.err.println("File not found: " + e.getMessage());
+	    return new HighscoreList(filename, lowerIsBetter);
 	}
+    }
 
-	public void saveToFile(String fullPath) throws IOException {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static HighscoreList loadFromFile(String fullPath, String filename, boolean lowerIsBetter) throws FileNotFoundException {
+	Gson gson = new Gson();
 
-		File originalFile = new File(fullPath);
-		File tempFile = new File(fullPath + ".tmp");
+	try (FileReader reader = new FileReader(fullPath)) {
+	    HighscoreList loaded = gson.fromJson(reader, HighscoreList.class);
 
-		File parentDir = originalFile.getParentFile();
-		if (parentDir != null && !parentDir.exists()) {
-			if (!parentDir.mkdirs()) {
-				throw new IOException("Kunde inte skapa katalog: " + parentDir);
-			}
-		}
+	    if (loaded == null || loaded.highscores == null) {
+		return new HighscoreList(filename, lowerIsBetter);
+	    }
 
-		try (FileWriter writer = new FileWriter(tempFile)) {
-			gson.toJson(this, writer);
-		}
+	    HighscoreList result = new HighscoreList(filename, lowerIsBetter);
+	    result.highscores.addAll(loaded.highscores);
 
-		Files.move(tempFile.toPath(),
-				originalFile.toPath(),
-				StandardCopyOption.REPLACE_EXISTING,
-				StandardCopyOption.ATOMIC_MOVE);
+	    if (lowerIsBetter) {
+		result.highscores.sort(Comparator.comparingInt(Highscore::getPoints));
+	    } else {
+		result.highscores.sort((o1, o2) -> Integer.compare(o2.getPoints(), o1.getPoints()));
+	    }
+
+	    if (result.highscores.size() > MAX_HIGH_SCORE_LIST_SIZE) {
+		result.highscores = new ArrayList<>(result.highscores.subList(0, MAX_HIGH_SCORE_LIST_SIZE));
+	    }
+
+	    return result;
+
+	} catch (IOException e) {
+	    FileNotFoundException ex = new FileNotFoundException(e.getMessage());
+	    ex.initCause(e);
+	    throw ex;
 	}
+    }
 
-	public static HighscoreList load(String filename, boolean lowerIsBetter) {
-		try {
-			return loadFromFile(getFullPath(filename), filename, lowerIsBetter);
-		} catch (FileNotFoundException e) {
-			return new HighscoreList(filename, lowerIsBetter);
-		}
-	}
-
-	public static HighscoreList loadFromFile(String fullPath, String filename, boolean lowerIsBetter) throws FileNotFoundException {
-		Gson gson = new Gson();
-
-		try (FileReader reader = new FileReader(fullPath)) {
-			HighscoreList loaded = gson.fromJson(reader, HighscoreList.class);
-
-			if (loaded == null || loaded.highscores == null) {
-				return new HighscoreList(filename, lowerIsBetter);
-			}
-
-			HighscoreList result = new HighscoreList(filename, lowerIsBetter);
-			result.highscores.addAll(loaded.highscores);
-
-			if (lowerIsBetter) {
-				result.highscores.sort(Comparator.comparingInt(Highscore::getPoints));
-			} else {
-				result.highscores.sort((o1, o2) -> Integer.compare(o2.getPoints(), o1.getPoints()));
-			}
-
-			if (result.highscores.size() > 10) {
-				result.highscores = new ArrayList<>(result.highscores.subList(0, 10));
-			}
-
-			return result;
-		} catch (IOException e) {
-			FileNotFoundException ex = new FileNotFoundException(e.getMessage());
-			ex.initCause(e);
-			throw ex;
-		}
-	}
-
-	private static String getFullPath(String filename) {
-		return System.getProperty("user.home") + "/DopeSlopeData/" + filename;
-	}
+    private static String getFullPath(String filename) {
+	return System.getProperty("user.home") + File.separator + "DopeSlopeData" + File.separator + filename;
+    }
 }
