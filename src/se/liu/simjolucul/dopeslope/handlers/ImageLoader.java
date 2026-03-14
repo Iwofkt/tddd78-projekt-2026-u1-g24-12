@@ -3,6 +3,7 @@ package se.liu.simjolucul.dopeslope.handlers;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,7 +19,7 @@ public class ImageLoader {
 
     public static BufferedImage loadTexture(String texturePack, String type) {
 
-        String path = "/textures/" + texturePack + "/" + type + ".png";
+        String path = "textures" + File.separator + texturePack + File.separator + type + ".png";
 
         try (InputStream is = ImageLoader.class.getResourceAsStream(path)) {
             if (is == null) {
@@ -39,7 +40,7 @@ public class ImageLoader {
     public static BufferedImage loadTextureSize(String texturePack, String type, int widthFactor, int heightFactor) {
         BufferedImage img = loadTexture(texturePack, type);
         if (img == null) {
-            return null; // original could not be loaded
+            return null;
         }
 
         int newWidth = img.getWidth() * widthFactor;
