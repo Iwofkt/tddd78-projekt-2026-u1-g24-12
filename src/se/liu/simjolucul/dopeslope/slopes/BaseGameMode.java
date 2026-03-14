@@ -7,9 +7,14 @@ import se.liu.simjolucul.dopeslope.handlers.ImageLoader;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Random;
-
+/**
+ * An abstract class representing the base functionality for a game mode.
+ * This class manages common resources like obstacle textures, gate images, and the player,
+ * but the actual gameplay logic and level design is left to be defined by subclasses.
+ */
 public abstract class BaseGameMode implements GameMode {
-    // Common constants
+
+    // ------ Common constants ------
 
     protected static final int SPAWN_DISTANCE_THRESHOLD = 10;
     protected static final int OBSTACLE_TEXTURE_SCALE = 2;
@@ -20,7 +25,7 @@ public abstract class BaseGameMode implements GameMode {
     protected final Player player;
     protected final List<Obstacle> obstacles;
     protected final List<Gate> gates;
-    protected final List<FinishLine> finishline;
+    protected final List<FinishLine> finishLine;
 
     protected double deltaDistanceTraveled = 0;
     protected double oldPlayerDistance = 0;
@@ -34,7 +39,7 @@ public abstract class BaseGameMode implements GameMode {
 	this.player = gameBase.getPlayer();
 	this.obstacles = gameBase.getObstacles();
 	this.gates = gameBase.getGates();
-	this.finishline = gameBase.getFinishLine();
+	this.finishLine = gameBase.getFinishLine();
 
 	this.treeImg = ImageLoader.loadTextureSize(
 		gameBase.getResourcePack(), "tree",
@@ -65,6 +70,5 @@ public abstract class BaseGameMode implements GameMode {
     protected abstract void spawnObstacles();
     protected abstract void spawnGates();
 
-    // Default no-op for modes without finish line
     protected abstract void spawnFinishLine();
 }

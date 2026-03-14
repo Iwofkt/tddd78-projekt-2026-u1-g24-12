@@ -77,15 +77,6 @@ public class MenuModel {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
-    /**
-     * Adds a listener for menu changes.
-     *
-     * @param listener A Runnable to be executed when the menu changes.
-     */
-    public void addChangeListener(Runnable listener) {
-        changeListeners.add(listener);
-    }
-
     private void notifyChange() {
         for (Runnable r : changeListeners) {
             r.run();
@@ -97,36 +88,20 @@ public class MenuModel {
     public int getHoveredIndex() { return hoveredIndex; }
     public void setHoveredIndex(int index) { this.hoveredIndex = index; }
 
-    /**
-     * Selects the next menu item, wrapping around if necessary.
-     */
     public void selectNext() {
         if (items != null && !items.isEmpty()) {
             selectedIndex = (selectedIndex + 1) % items.size();
         }
     }
 
-    /**
-     * Selects the previous menu item, wrapping around if necessary.
-     */
     public void selectPrevious() {
         if (items != null && !items.isEmpty()) {
             selectedIndex = (selectedIndex - 1 + items.size()) % items.size();
         }
     }
 
-    /**
-     * Inner class for menu items.
-     */
     public static class MenuItem {
-        /**
-         * The label text displayed on the menu item.
-         */
         public final String label;
-
-        /**
-         * The command associated with the menu item.
-         */
         public final String command;
 
         public MenuItem(String label, String command) {

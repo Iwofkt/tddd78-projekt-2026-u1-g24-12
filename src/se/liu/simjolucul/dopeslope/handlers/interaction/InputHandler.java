@@ -57,10 +57,6 @@ public class InputHandler {
         return quitPressed;
     }
 
-    public void resetQuit() {
-        quitPressed = false;
-    }
-
     public void setLeftPressed(boolean leftPressed) {
         keyPresses.put(Direction.LEFT, leftPressed);
     }

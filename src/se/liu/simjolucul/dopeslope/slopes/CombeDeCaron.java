@@ -7,7 +7,11 @@ import se.liu.simjolucul.dopeslope.handlers.collision.GateCollisionAlpine;
 import se.liu.simjolucul.dopeslope.handlers.collision.GateCollisionEndless;
 
 import java.util.List;
-
+/**
+ * Represents the "Combe De Caron" game mode in Dope Slope.
+ * Handles obstacle, gate, and finish line spawning at set positions, as well as
+ * specific collision detection.
+ */
 public class CombeDeCaron extends BaseGameMode {
     private static final int OBSTACLE_CHANCE_MAX = 30;
     private static final int OBSTACLE_CHANCE_THRESHOLD = 20;
@@ -72,7 +76,7 @@ public class CombeDeCaron extends BaseGameMode {
     @Override
     protected void spawnFinishLine() {
         if (!finishLineSpawned && player.getDistanceTraveled() >= FINISH_LINE_DISTANCE) {
-            finishline.add(new FinishLine(
+            finishLine.add(new FinishLine(
                     FINISH_LINE_X, gameBase.getHeight(),
                     FINISH_LINE_WIDTH, FINISH_LINE_HEIGHT,
                     rightGateImg
@@ -88,7 +92,7 @@ public class CombeDeCaron extends BaseGameMode {
                 gameBase.setGameOver(true);
             }
         }
-        for (FinishLine line : finishline) {
+        for (FinishLine line : finishLine) {
             if (gateCollisionEndless.isCollisionDetected(player, line)) {
                 gameBase.setFinishedRace(true);
                 gameBase.setGameOver(true);

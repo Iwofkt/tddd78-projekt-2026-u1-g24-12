@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class HighscoreList {
 
-    private static final int MAX_HIGH_SCORE_LIST_SIZE = 10;
+    private static final int MAX_LIST_SIZE = 10;
 
     private List<Highscore> highscores;
     private final String filename;
@@ -38,8 +38,8 @@ public class HighscoreList {
 	    highscores.sort((o1, o2) -> Integer.compare(o2.getPoints(), o1.getPoints()));
 	}
 
-	if (highscores.size() > MAX_HIGH_SCORE_LIST_SIZE) {
-	    highscores = new ArrayList<>(highscores.subList(0, MAX_HIGH_SCORE_LIST_SIZE));
+	if (highscores.size() > MAX_LIST_SIZE) {
+	    highscores = new ArrayList<>(highscores.subList(0, MAX_LIST_SIZE));
 	}
 
 	save();
@@ -105,8 +105,8 @@ public class HighscoreList {
 		result.highscores.sort((o1, o2) -> Integer.compare(o2.getPoints(), o1.getPoints()));
 	    }
 
-	    if (result.highscores.size() > MAX_HIGH_SCORE_LIST_SIZE) {
-		result.highscores = new ArrayList<>(result.highscores.subList(0, MAX_HIGH_SCORE_LIST_SIZE));
+	    if (result.highscores.size() > MAX_LIST_SIZE) {
+		result.highscores = new ArrayList<>(result.highscores.subList(0, MAX_LIST_SIZE));
 	    }
 
 	    return result;

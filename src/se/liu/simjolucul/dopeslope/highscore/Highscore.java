@@ -7,7 +7,7 @@ public class Highscore {
 
     private static final int DNF_SCORE = Integer.MAX_VALUE;
 
-    private String name = null;
+    private String name;
     private int points;
 
     public Highscore(String name, int points) {
